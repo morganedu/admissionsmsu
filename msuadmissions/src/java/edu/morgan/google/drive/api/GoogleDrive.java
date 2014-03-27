@@ -29,7 +29,7 @@ public class GoogleDrive {
 
     private static final String CLIENT_ID = "892186241167-228o9c5afo7fqrnbciabv81eghdj63f5.apps.googleusercontent.com";
     private static final String CLIENT_SECRET = "BVuUu5FU8boxFTgkSMtpJwDK";
-    private static final String REDIRECT_URI = "http://localhost:8084/xml2googledrive/xml2googledriveindex.jsp";
+    private static String REDIRECT_URI;
 
     private HttpTransport httpTransport;
     private JsonFactory jsonFactory;
@@ -40,6 +40,11 @@ public class GoogleDrive {
     private String authorizationUrl = null;
 
     public GoogleDrive() {
+        this.instantiateDependencies();
+    }
+    
+    public GoogleDrive(String redirectUrl) {
+        REDIRECT_URI = redirectUrl;
         this.instantiateDependencies();
     }
     
@@ -279,7 +284,7 @@ public class GoogleDrive {
     }
 
     public static void main(String args[]) {
-        GoogleDrive drive = new GoogleDrive();
+        GoogleDrive drive = new GoogleDrive("http://localhost:8084/xml2googledrive/xml2googledriveindex.jsp");
         try {
             drive.test();
         } catch (Exception ex) {
