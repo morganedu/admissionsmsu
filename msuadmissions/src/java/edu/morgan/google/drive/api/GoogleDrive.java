@@ -44,18 +44,11 @@ public class GoogleDrive {
     }
     
     /*
-     * Listing and checking of Files and Folders
+     * Checking of Files and Folders
      */
     
     public boolean checkFolderExistByUser(String firstName, String lastName) throws IOException{
         return this.checkFolderExistByUser(firstName + " " + lastName);
-    }
-    
-    public boolean checkFolderExistByUser(String user) throws IOException{
-        for (File file : this.getListFilesTemplate())
-            if(file.getTitle().equals(user.trim().toUpperCase()) && file.getMimeType().equals("application/vnd.google-apps.folder"))
-                return true;
-        return false;
     }
     
     public boolean checkFileExistByName(String name) throws IOException{
@@ -65,25 +58,36 @@ public class GoogleDrive {
         return false;
     }
     
-    public void listFilesByUser(String firstName, String lastName) throws IOException{
-        this.listFilesByUser(firstName + " " + lastName);
+    public boolean checkFolderExistByUser(String user) throws IOException{
+        for (File file : this.getListFilesTemplate())
+            if(file.getTitle().equals(user.trim().toUpperCase()) && file.getMimeType().equals("application/vnd.google-apps.folder"))
+                return true;
+        return false;
     }
     
-    public void listFilesByUser(String user) throws IOException{
-        for (File file : this.getListFilesTemplate()) {
-            if(file.getOwnerNames().contains(user.trim())){
-                System.out.println(file.getId() + " - " + file.getTitle() + " - " + file.getMimeType() + " - parent: ");
-                for(ParentReference pr : file.getParents())
-                    System.out.println(pr.getId());
-            }
-        }
+    /*
+     * Listing of Files and Folders
+     */
+    
+    public ArrayList<File> listFilesByUser(String firstName, String lastName) throws IOException{
+        return this.listFilesByUser(firstName + " " + lastName);
+    }
+    
+    public ArrayList<File> listFilesByUser(String user) throws IOException{
+        ArrayList<File> userFiles = this.getListFilesTemplate();
+        for (File file : userFiles)
+            if(!file.getOwnerNames().contains(user.trim()))
+                userFiles.remove(file);
+        return userFiles;
     }
 
-    public void listAllFiles() throws IOException {
-        for (File file : this.getListFilesTemplate()) {
-                System.out.println("All: " + file.getTitle());
-        }
+    public ArrayList<File> listAllFiles() throws IOException {
+        return this.getListFilesTemplate();
     }
+    
+    /*
+     * Getters
+     */
     
     public File getFileById(String fileId) throws IOException{
         for (File file : this.getListFilesTemplate()) {
@@ -110,6 +114,15 @@ public class GoogleDrive {
         return null;
     }
     
+    public String getAuthorizationUrl(){
+        return this.authorizationUrl;
+    }
+    
+    public String getCodeValidation(){
+        return this.codeValidation;
+    }
+    
+    // On Progress
     public String getMineType(String pathToFile){
         String[] extention = pathToFile.split(".");
         String ext = extention[extention.length-1];
@@ -123,40 +136,35 @@ public class GoogleDrive {
     }
     
     /*
+     * Setters
+     */
+    
+    public void setAuthorizationUrl(String code) {
+        this.authorizationUrl = code;
+    }
+    
+    public void setCodeValidation(String code) {
+        this.codeValidation = code;
+    }
+    
+    /*
      * Creation of Files and Folders
      */
     
     public void doEverything(String firstName, String lastName, String pathToFile, String fileTitle, String fileDescription, String fileMimeType) throws IOException{
         File folder, file;
-        if(!this.checkFolderExistByUser(firstName, lastName)) 
+        if(!this.checkFolderExistByUser(firstName, lastName)) // If Folder doesn't exist
             folder = this.createFolder(firstName, lastName); // Create Folder
         else
-            folder = this.getFolderByName(firstName, lastName); // Get Folder
+            folder = this.getFolderByName(firstName, lastName); // Otherwise, Get Folder
         
-        if(!this.checkFileExistByName(fileTitle)){ // File doesn't exist.
-            file = this.uploadFile(pathToFile, fileTitle, fileDescription, fileMimeType);
-            this.moveFileIntoFolder(folder.getId(), file.getId());
-        }
+        if(!this.checkFileExistByName(fileTitle)) // If File doesn't exist.
+            this.uploadFile(pathToFile, fileTitle, fileDescription, fileMimeType, folder.getId());
         else{ // File exist
             file = this.getFileByTitle(fileTitle);
             if(!file.getParents().get(0).getId().equals(folder.getId())) // File isn't inside the folder
-                this.copyFileIntoFolder(file, folder.getId());
+                this.moveFileIntoFolder(folder.getId(), file.getId()); // make a symbolic copy
         }
-    }
-    
-    public File copyFileIntoFolder(File origin, String folderId) throws IOException{
-        File copiedFile = new File();
-        copiedFile.setTitle(origin.getTitle());
-        ParentReference newParent = new ParentReference();
-        newParent.setId(folderId);
-        copiedFile.setParents(Arrays.asList(newParent)); 
-        return this.service.files().copy(origin.getId(), copiedFile).execute();
-        //return null;
-    }
-    
-    public void createFolderAddFile(String firstName, String lastName, String pathToFile, String fileTitle, String fileDescription, String fileMimeType) throws IOException{
-        File folder = this.createFolderIfDoesntExist(firstName, lastName);
-        File file = this.uploadFile(pathToFile, fileTitle, fileDescription, fileMimeType);
     }
     
     public File createFolderIfDoesntExist(String firstName, String lastName) throws IOException{
@@ -185,8 +193,11 @@ public class GoogleDrive {
             ).execute();
     }
     
-    public void setCodeValidation(String code) {
-        this.codeValidation = code;
+    public File uploadFile(String pathToFile, String fileTitle, String fileDescription, String fileMimeType, String parentId) throws IOException {
+        return this.service.files().insert(
+                    this.prepareFile(fileTitle, fileDescription, fileMimeType, parentId),
+                    this.newFileMediaContentTemplate(pathToFile, fileMimeType)
+            ).execute();
     }
     
     /*
@@ -218,6 +229,27 @@ public class GoogleDrive {
         }
     }
 
+    private File prepareFile(String title, String description, String mimeType) {
+        // Insert a file
+        File body = new File();
+        body.setTitle(title);
+        body.setDescription(description);
+        body.setMimeType(mimeType);
+        return body;
+    }
+    
+    private File prepareFile(String title, String description, String mimeType, String parentId) {
+        // Insert a file
+        File body = new File();
+        body.setTitle(title);
+        body.setDescription(description);
+        body.setMimeType(mimeType);
+        ParentReference newParent = new ParentReference();
+        newParent.setId(parentId);
+        body.setParents(Arrays.asList(newParent));
+        return body;
+    }
+    
     private void instantiateDependencies() {
         this.httpTransport = new NetHttpTransport();
         this.jsonFactory = new JacksonFactory();
@@ -227,15 +259,6 @@ public class GoogleDrive {
                 .setAccessType("online")
                 .setApprovalPrompt("auto").build();
         this.authorizationUrl = this.flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build();
-    }
-
-    private File prepareFile(String title, String description, String mimeType) {
-        // Insert a file
-        File body = new File();
-        body.setTitle(title);
-        body.setDescription(description);
-        body.setMimeType(mimeType);
-        return body;
     }
 
     /*
@@ -253,8 +276,6 @@ public class GoogleDrive {
         //this.uploadFile("/Users/pablohpsilva/Desktop/document.txt", "My Document Example", "This is an example of description", "text/plain");
         //this.createFolder("fulano", "cicrano");
         this.doEverything("fulano", "cicrano", "/Users/pablohpsilva/Desktop/document.txt", "My Document Example", "This is an example of description", "text/plain");
-        this.listAllFiles();
-        this.listFilesByUser("Admissions Morgan");
     }
 
     public static void main(String args[]) {
