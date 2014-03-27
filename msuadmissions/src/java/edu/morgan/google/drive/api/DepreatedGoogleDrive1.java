@@ -8,7 +8,7 @@ package edu.morgan.google.drive.api;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import edu.morgan.google.drive.GoogleDriveFunctions;
+//import edu.morgan.google.drive.GoogleDriveFunctions;
 
 /**
  *
@@ -16,15 +16,15 @@ import edu.morgan.google.drive.GoogleDriveFunctions;
  */
 @ManagedBean
 @RequestScoped
-public class GoogleDrive1 {
+public class DepreatedGoogleDrive1 {
 
     /**
      * Creates a new instance of GoogleDrive
      */
-    private GoogleDriveFunctions googleFunctions;
+    private DeprecatedGoogleDriveFunctions googleFunctions;
     private String URL;
-    public GoogleDrive1() {
-        googleFunctions = new GoogleDriveFunctions("");
+    public DepreatedGoogleDrive1() {
+        googleFunctions = new DeprecatedGoogleDriveFunctions("");
     }
 
     public String getURL() {

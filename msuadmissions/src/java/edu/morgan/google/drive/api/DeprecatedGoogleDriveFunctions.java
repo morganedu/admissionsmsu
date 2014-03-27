@@ -28,7 +28,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class GoogleDriveFunctions {
+public class DeprecatedGoogleDriveFunctions {
 
     private static final String CLIENT_ID = "892186241167-2qk5mrb6sj5ltkpv20lirkfjnpcesacn.apps.googleusercontent.com";
     private static final String CLIENT_SECRET = "eAWILdYH71N4oIhBXvvjMkRP";
@@ -42,7 +42,7 @@ public class GoogleDriveFunctions {
     private String codeValidation = null;
     private String authorizationUrl = null;
 
-    public GoogleDriveFunctions(String code) {
+    public DeprecatedGoogleDriveFunctions(String code) {
         this.instantiateDependencies();
         this.codeValidation = code;
          try {

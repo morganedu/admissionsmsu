@@ -6,7 +6,7 @@
 package edu.morgan.google.drive.auth;
 
 import com.google.api.services.drive.model.File;
-import edu.morgan.google.drive.GoogleDriveFunctions;
+import edu.morgan.google.drive.api.GoogleDrive;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -49,9 +49,9 @@ public class CodeUseServlet extends HttpServlet {
             out.println("<body>");
             out.println("<h1>"+ "The List of Files In Drive." +"</h1>");
             out.println("<div class=\"center_content\" name =\"content\">");
-            GoogleDriveFunctions googleDriveFunctions = new GoogleDriveFunctions(code);
+            GoogleDrive googleDriveFunctions = new GoogleDrive(code);
             //googleDriveFunctions.setCodeValidation(code);
-            ArrayList <File> fileList = googleDriveFunctions.getListFiles();
+            ArrayList <File> fileList = googleDriveFunctions.ListAllFiles();
             for(File file : fileList)
             {
                 out.println("<p>"+file.getTitle() +"</p>");

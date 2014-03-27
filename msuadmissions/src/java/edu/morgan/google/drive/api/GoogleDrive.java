@@ -152,6 +152,10 @@ public class GoogleDrive {
         }
     }
     
+    public String getAuthorizationLink(){
+        return AUTHORIZATION_URI;
+    }
+    
     /*
     
     public boolean checkFolderExistByUser(String firstName, String lastName) throws IOException{
