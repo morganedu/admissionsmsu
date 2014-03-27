@@ -10,18 +10,20 @@ package edu.morgan.google.test;
  *
  * @author user
  */
-import java.io.FileOutputStream;
 
+
+import java.io.FileOutputStream;
+/*
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
-
+*/
 public class NewClass {
 
     /**
      * @param args
-     */
+     
     public static void main(String[] args) {
 
         try {
@@ -58,6 +60,7 @@ public class NewClass {
             Writing d:\temp\x\tx-003.pdf
          */
         
-    }
+ //   }
+
 }
 

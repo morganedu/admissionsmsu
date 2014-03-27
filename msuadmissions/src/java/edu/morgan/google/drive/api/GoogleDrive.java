@@ -8,14 +8,12 @@ package edu.morgan.google.drive.api;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
-import com.google.api.client.http.FileContent;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.ChildReference;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.ParentReference;
@@ -24,13 +22,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class GoogleDrive {
 
     private static final String CLIENT_ID = "892186241167-228o9c5afo7fqrnbciabv81eghdj63f5.apps.googleusercontent.com";
     private static final String CLIENT_SECRET = "BVuUu5FU8boxFTgkSMtpJwDK";
-    private static String REDIRECT_URI;
+    private static String REDIRECT_URI = "http://localhost:8084/msuadmissions/XML2GoogleDrive/index.jsp";
     private static String CODE_VALIDATION;
     private static String AUTHORIZATION_URI;
 
@@ -39,8 +36,9 @@ public class GoogleDrive {
     private GoogleAuthorizationCodeFlow flow;
     private Drive service;
     
-    public GoogleDrive(String redirectUri) {
-        REDIRECT_URI = redirectUri;
+    //public GoogleDrive(String redirectUri) {
+    public GoogleDrive(String codeValidation) {
+        //REDIRECT_URI = redirectUri;
         this.httpTransport = new NetHttpTransport();
         this.jsonFactory = new JacksonFactory();
 
@@ -49,9 +47,11 @@ public class GoogleDrive {
                 .setAccessType("online")
                 .setApprovalPrompt("auto").build();
         AUTHORIZATION_URI = this.flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build();
+        
+        this.setCode(codeValidation);
     }
     
-    public void setCodeValidation(String code){
+    public void setCode(String code){
         try {
             CODE_VALIDATION = code;
             GoogleTokenResponse response = this.flow.newTokenRequest(CODE_VALIDATION).setRedirectUri(REDIRECT_URI).execute();
@@ -152,8 +152,12 @@ public class GoogleDrive {
         }
     }
     
-    public String getAuthorizationLink(){
+    public String GetAuthorizationLink(){
         return AUTHORIZATION_URI;
+    }
+    
+    public String GetRedirectURI(){
+        return REDIRECT_URI;
     }
     
     /*
@@ -377,11 +381,6 @@ public class GoogleDrive {
     */
 
     public void test() throws IOException {
-        System.out.println("Please open the following URL in your browser then type the authorization code:");
-        System.out.println("  " + AUTHORIZATION_URI);
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        CODE_VALIDATION = br.readLine();
-        this.setCodeValidation(CODE_VALIDATION);
         
         /*File a = this.CreateFolder("FulanoA", "Cicrano", "123Asad");
         File b = this.CreateFolder("FulanoB", "Cicrano", "123Asad");
@@ -396,8 +395,11 @@ public class GoogleDrive {
     }
 
     public static void main(String args[]) {
-        GoogleDrive drive = new GoogleDrive("http://localhost:8084/msuadmissions/XML2GoogleDrive/index.jsp");
+        System.out.println("Please open the following URL in your browser then type the authorization code:");
+        System.out.println("  " + AUTHORIZATION_URI);
         try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            GoogleDrive drive = new GoogleDrive(br.readLine());
             drive.test();
         } catch (Exception ex) {
             System.out.print("");
