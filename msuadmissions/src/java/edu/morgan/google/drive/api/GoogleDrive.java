@@ -66,11 +66,17 @@ public class GoogleDrive {
         return this.CreateFolder(LastName + " " + FirstName + " " + ID);
     }
     
-    public File CreateFolder(String ownerName) throws IOException{
-        File body = new File();
-        body.setTitle(ownerName.trim().toUpperCase());
-        body.setMimeType("application/vnd.google-apps.folder");
-        return this.service.files().insert(body).execute(); 
+    public File CreateFolder(String ownerName){
+        try{
+            File body = new File();
+            body.setTitle(ownerName.trim().toUpperCase());
+            body.setMimeType("application/vnd.google-apps.folder");
+            return this.service.files().insert(body).execute(); 
+        }
+        catch(IOException ex){
+            ex.printStackTrace();
+            return null;
+        }
     }
     
     
@@ -81,7 +87,7 @@ public class GoogleDrive {
      * FileTo can only be used as Folder!!!
      *
      */
-    public File MoveFolders(Object fileFrom, Object fileTo) throws IOException{
+    public File MoveFiles(Object fileFrom, Object fileTo) throws IOException{
         File file, target;
         if(fileFrom.getClass().equals("String")){
             file =  this.service.files().get((String) fileFrom).execute();
@@ -106,14 +112,44 @@ public class GoogleDrive {
         return this.service.files().update(file.getId(), file).execute();
     }
     
-    public File GetFileByTitle(String title) throws IOException{
-        Drive.Files.List list = this.service.files().list();
-        FileList fileList = list.execute();
-        ArrayList<File> arrayListFiles = (ArrayList) fileList.getItems();
-        for(File file : arrayListFiles)
-            if(file.getTitle().equals(title))
-                return file;
-        return null;
+    public File GetFileByTitle(String title){
+        try{
+            Drive.Files.List list = this.service.files().list();
+            FileList fileList = list.execute();
+            ArrayList<File> arrayListFiles = (ArrayList) fileList.getItems();
+            for(File file : arrayListFiles)
+                if(file.getTitle().equals(title))
+                    return file;
+            return null;
+        }
+        catch(IOException ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+    public File GetFileById(String fileId){
+        try{
+            File file = this.service.files().get(fileId).execute();
+            return file;
+        }
+        catch(IOException ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+    public ArrayList<File> ListAllFiles(){
+        try{
+            Drive.Files.List list = this.service.files().list();
+            FileList fileList = list.execute();
+            ArrayList<File> arrayListFiles = (ArrayList) fileList.getItems();
+            return arrayListFiles;
+        }
+        catch(IOException ex){
+            ex.printStackTrace();
+            return null;
+        }
     }
     
     /*
@@ -343,19 +379,16 @@ public class GoogleDrive {
         CODE_VALIDATION = br.readLine();
         this.setCodeValidation(CODE_VALIDATION);
         
-        File a = this.CreateFolder("FulanoA", "Cicrano", "123Asad");
+        /*File a = this.CreateFolder("FulanoA", "Cicrano", "123Asad");
         File b = this.CreateFolder("FulanoB", "Cicrano", "123Asad");
         
-        this.MoveFolders(a, b);
-        
-        //this.doEverything("fulano", "cicrano", "/Users/pablohpsilva/Desktop/document.txt", "My Document Example", "This is an example of description", "text/plain");
-        /*
-        for (File file : this.listAllFiles())
-            System.out.println(file.getId() + " - " + file.getOwnerNames().get(0) + " - " + file.getTitle() + " - " + file.getMimeType());
-        /*
-        for (File file : this.listFilesByUser("fulano", "cicrano"))
-            System.out.println(file.getId() + " - " +file.getTitle() + " - " + file.getMimeType());
+        this.MoveFiles(a, b);
         */
+        File target = this.GetFileByTitle("FULANOB CICRANO 123ASAD");
+        
+        for(File file : this.ListAllFiles())
+            if(!file.getId().equals(target.getId()))
+                this.MoveFiles(file, target);
     }
 
     public static void main(String args[]) {

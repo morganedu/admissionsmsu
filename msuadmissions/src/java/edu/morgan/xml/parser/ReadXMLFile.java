@@ -27,10 +27,10 @@ public class ReadXMLFile {
     public ReadXMLFile(){}
     
     public ReadXMLFile(String xmlPath){
-        this.buildXMLReader(xmlPath);
+        this.BuildXMLReader(xmlPath);
     }
     
-    private void buildXMLReader(String xmlPath){
+    private void BuildXMLReader(String xmlPath){
         try{
             xmlPathFile = xmlPath;
             this.xmlFile = new File(xmlPath);
@@ -44,23 +44,23 @@ public class ReadXMLFile {
         }
     }
     
-    public Document getXMLDocument(){
+    public Document GetXMLDocument(){
         return this.doc;
     }
     
-    public NodeList getInfoByTagName(String tagName){
+    public NodeList GetInfoByTagName(String tagName){
         return this.doc.getElementsByTagName(tagName);
     }
     
-    public String getFirstLastNames(){
-        return this.getInfoByTagName("firstname").toString() + " " + this.getInfoByTagName("lastname").toString();
+    public String GetFirstLastNames(){
+        return this.GetInfoByTagName("firstname").toString() + " " + this.GetInfoByTagName("lastname").toString();
     }
  
   public static void main(String argv[]) {
  
     try {
         ReadXMLFile readxmlfile = new ReadXMLFile("/Users/pablohpsilva/Desktop/staff.xml");
-        NodeList nList = readxmlfile.getInfoByTagName("staff");
+        NodeList nList = readxmlfile.GetInfoByTagName("staff");
  
 	//System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
  
