@@ -121,24 +121,6 @@ public class GoogleDrive {
         return this.service.files().update(file.getId(), file).execute();
     }
 
-    public File GetFileByTitle(String fileTitle) {
-        String title = fileTitle.trim().toUpperCase();
-        try {
-            Drive.Files.List list = this.service.files().list();
-            FileList fileList = list.execute();
-            ArrayList<File> arrayListFiles = (ArrayList) fileList.getItems();
-            for (File file : arrayListFiles) {
-                if (file.getTitle().equals(title)) {
-                    return file;
-                }
-            }
-            return null;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
     public File GetFileById(String fileId) {
         try {
             File file = this.service.files().get(fileId).execute();
@@ -169,6 +151,18 @@ public class GoogleDrive {
         return REDIRECT_URI;
     }
     
+    public File GetFolderOrCreate(String firstName, String lastName, String userID){
+        try{
+            File folder = this.GetFoldersByUserInformation(firstName, lastName, userID);
+            if(folder == null)
+                folder = this.CreateFolder(lastName, firstName, userID);
+            return folder;
+        } catch(IOException ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
     public File GetFoldersByUserInformation(String firstName, String lastName, String userID){
         try{
             return this.retrieveAllFiles("title contains '" + firstName + "' title contains '" + lastName + "' and title contains '" + userID + "' and mimeType = 'application/vnd.google-apps.folder'" ).get(0);
@@ -178,9 +172,18 @@ public class GoogleDrive {
         }
     }
     
-    public ArrayList<File> GetFilesByTitle(String fileTitle) throws IOException{
+    public ArrayList<File> GetFilesByTitle(String fileTitle){
         try{
-            return this.retrieveAllFiles("title contains '" + fileTitle + "'" );
+            return this.retrieveAllFiles("title contains '" + fileTitle + "' and mimeType != 'application/vnd.google-apps.folder'" );
+        } catch(IOException ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+    public File GetFileByTitle(String fileTitle){
+        try{
+            return this.retrieveAllFiles("title contains '" + fileTitle + "' and mimeType != 'application/vnd.google-apps.folder'" ).get(0);
         } catch(IOException ex){
             ex.printStackTrace();
             return null;

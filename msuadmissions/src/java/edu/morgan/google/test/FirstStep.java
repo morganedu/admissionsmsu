@@ -6,9 +6,14 @@
 
 package edu.morgan.google.test;
 
+import com.google.api.services.drive.model.File;
 import edu.morgan.google.drive.api.GoogleDrive;
+import edu.morgan.users.IncompleteStudents;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -16,12 +21,41 @@ import java.io.InputStreamReader;
  */
 public class FirstStep {
     private GoogleDrive service;
+    private HashMap<String, ArrayList<String>> documentsMissing;
+    private HashMap<String, ArrayList<String>> documentsFound;
     
     public FirstStep(){
         this.service = new GoogleDrive();
+        this.documentsFound = new HashMap<>();
+        this.documentsMissing = new HashMap<>();
     }
     
-    public void execute(){
+    public void execute(ArrayList<IncompleteStudents> incompleteStudents){
+        try{
+            //Create a folder called PASSED
+            File folderPassed = this.service.CreateFolder("PASSED");
+
+            for(IncompleteStudents student : incompleteStudents){
+                File studentFolder = this.service.GetFolderOrCreate(student.getLastName(), student.getFirstName(), student.getId());
+                ArrayList<File> studentFiles = new ArrayList<>();
+
+                ArrayList<String> docFound = new ArrayList<>();
+                ArrayList<String> docMissing = new ArrayList<>();
+
+                for(String document : student.getDocuments()){
+                    File aux = this.service.GetFileByTitle(document);
+                    if(aux == null)
+                        docMissing.add(document);
+                    else{
+                        docFound.add(document);
+                        this.service.MoveFiles(aux, studentFolder);
+                    }
+                }
+            }
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
+        
         System.out.println("  " + this.service.GetAuthorizationLink());
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

@@ -6,19 +6,21 @@
 
 package edu.morgan.users;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
  *
  * @author pablohpsilva
  */
-public class User {
+public class IncompleteStudents {
     private String lastName;
     private String firstName;
     private String term;
     private String checklist;
     private String id;
     private String dateOfBirth;
+    private ArrayList<String> documents;
 
     /**
      * @return the lastName
@@ -102,5 +104,19 @@ public class User {
      */
     public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    /**
+     * @return the documents
+     */
+    public ArrayList<String> getDocuments() {
+        return documents;
+    }
+
+    /**
+     * @param documents the documents to set
+     */
+    public void setDocuments(ArrayList<String> documents) {
+        this.documents = documents;
     }
 }
