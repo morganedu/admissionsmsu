@@ -18,7 +18,7 @@ public class User {
     private String term;
     private String checklist;
     private String id;
-    private Date dateOfBirth;
+    private String dateOfBirth;
 
     /**
      * @return the lastName
@@ -93,14 +93,14 @@ public class User {
     /**
      * @return the dateOfBirth
      */
-    public Date getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 
     /**
      * @param dateOfBirth the dateOfBirth to set
      */
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 }
