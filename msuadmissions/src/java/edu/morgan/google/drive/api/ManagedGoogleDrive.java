@@ -16,14 +16,14 @@ import javax.faces.bean.RequestScoped;
  */
 @ManagedBean
 @RequestScoped
-public class DepreatedGoogleDrive1 {
+public class ManagedGoogleDrive {
 
     /**
      * Creates a new instance of GoogleDrive
      */
     private DeprecatedGoogleDriveFunctions googleFunctions;
     private String URL;
-    public DepreatedGoogleDrive1() {
+    public ManagedGoogleDrive() {
         googleFunctions = new DeprecatedGoogleDriveFunctions("");
     }
 
