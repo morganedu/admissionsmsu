@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +39,7 @@ public class GoogleDrive {
     private JsonFactory jsonFactory;
     private GoogleAuthorizationCodeFlow flow;
     private Drive service;
-    
+
     //public GoogleDrive(String redirectUri) {
     public GoogleDrive(String codeValidation) {
         //REDIRECT_URI = redirectUri;
@@ -50,10 +51,10 @@ public class GoogleDrive {
                 .setAccessType("online")
                 .setApprovalPrompt("auto").build();
         AUTHORIZATION_URI = this.flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build();
-        
+
         this.setCode(codeValidation);
     }
-    
+
     public GoogleDrive() {
         //REDIRECT_URI = redirectUri;
         this.httpTransport = new NetHttpTransport();
@@ -65,8 +66,8 @@ public class GoogleDrive {
                 .setApprovalPrompt("auto").build();
         AUTHORIZATION_URI = this.flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build();
     }
-    
-    public void setCode(String code){
+
+    public void setCode(String code) {
         try {
             CODE_VALIDATION = code;
             GoogleTokenResponse response = this.flow.newTokenRequest(CODE_VALIDATION).setRedirectUri(REDIRECT_URI).execute();
@@ -76,25 +77,23 @@ public class GoogleDrive {
             ex.printStackTrace();
         }
     }
-    
-    public File CreateFolder(String LastName, String FirstName, String ID) throws IOException{
+
+    public File CreateFolder(String LastName, String FirstName, String ID) throws IOException {
         return this.CreateFolder(LastName + " " + FirstName + " " + ID);
     }
-    
-    public File CreateFolder(String ownerName){
-        try{
+
+    public File CreateFolder(String ownerName) {
+        try {
             File body = new File();
             body.setTitle(ownerName.trim().toUpperCase());
             body.setMimeType("application/vnd.google-apps.folder");
-            return this.service.files().insert(body).execute(); 
-        }
-        catch(IOException ex){
+            return this.service.files().insert(body).execute();
+        } catch (IOException ex) {
             ex.printStackTrace();
             return null;
         }
     }
-    
-    
+
     /*
      * File: Document or Folder
      *
@@ -102,118 +101,117 @@ public class GoogleDrive {
      * FileTo can only be used as Folder!!!
      *
      */
-    public File MoveFiles(Object fileFrom, Object fileTo) throws IOException{
+    public File MoveFiles(Object fileFrom, Object fileTo) throws IOException {
         File file, target;
-        if(fileFrom.getClass().equals("String")){
-            file =  this.service.files().get((String) fileFrom).execute();
+        if (fileFrom.getClass().equals("String")) {
+            file = this.service.files().get((String) fileFrom).execute();
             target = this.service.files().get((String) fileTo).execute();
-        }
-        else{
-            file =  this.service.files().get(((File) fileFrom).getId()).execute();
+        } else {
+            file = this.service.files().get(((File) fileFrom).getId()).execute();
             target = this.service.files().get(((File) fileTo).getId()).execute();
         }
-        
+
         ParentReference newParent = new ParentReference();
         newParent.setSelfLink(target.getSelfLink());
         newParent.setParentLink(target.getParents().get(0).getSelfLink());
         newParent.setId(target.getId());
         newParent.setKind(target.getKind());
         newParent.setIsRoot(false);
-        
+
         ArrayList<ParentReference> parentsList = new ArrayList<>();
         parentsList.add(newParent);
         file.setParents(parentsList);
-        
+
         return this.service.files().update(file.getId(), file).execute();
     }
-    
-    public File GetFileByTitle(String fileTitle){
+
+    public File GetFileByTitle(String fileTitle) {
         String title = fileTitle.trim().toUpperCase();
-        try{
+        try {
             Drive.Files.List list = this.service.files().list();
             FileList fileList = list.execute();
             ArrayList<File> arrayListFiles = (ArrayList) fileList.getItems();
-            for(File file : arrayListFiles)
-                if(file.getTitle().equals(title))
+            for (File file : arrayListFiles) {
+                if (file.getTitle().equals(title)) {
                     return file;
+                }
+            }
             return null;
-        }
-        catch(IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
             return null;
         }
     }
-    
-    public File GetFileById(String fileId){
-        try{
+
+    public File GetFileById(String fileId) {
+        try {
             File file = this.service.files().get(fileId).execute();
             return file;
-        }
-        catch(IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
             return null;
         }
     }
-    
-    public ArrayList<File> ListAllFiles(){
-        try{
+
+    public ArrayList<File> ListAllFiles() {
+        try {
             Drive.Files.List list = this.service.files().list();
             FileList fileList = list.execute();
             ArrayList<File> arrayListFiles = (ArrayList) fileList.getItems();
             return arrayListFiles;
-        }
-        catch(IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
             return null;
         }
     }
-    
-    public String GetAuthorizationLink(){
+
+    public String GetAuthorizationLink() {
         return AUTHORIZATION_URI;
     }
-    
-    public String GetRedirectURI(){
+
+    public String GetRedirectURI() {
         return REDIRECT_URI;
     }
 
+    private static List<File> retrieveAllFiles(Drive service, String queryParameters) throws IOException {
+        List<File> result = new ArrayList<File>();
+        Drive.Files.List request = service.files().list().setQ(queryParameters);
+        result.addAll(request.execute().getItems());
+        return result;
+    }
+
     public void test() throws IOException {
-        
+
         /*
          * Test 1 - create folders and move one into another
          /
-        File a = this.CreateFolder("FulanoA", "Cicrano", "123Asad");
-        File b = this.CreateFolder("FulanoB", "Cicrano", "123Asad");
-        this.MoveFiles(a, b);
+         File a = this.CreateFolder("FulanoA", "Cicrano", "123Asad");
+         File b = this.CreateFolder("FulanoB", "Cicrano", "123Asad");
+         this.MoveFiles(a, b);
          */
-        
-        
         /*
          * Test 2 - get files and move them. Print files received from server.
          /
-        File a = this.GetFileByTitle("FulanoA Cicrano 123Asad");
-        File b = this.GetFileByTitle("FulanoB Cicrano 123Asad");
+         File a = this.GetFileByTitle("FulanoA Cicrano 123Asad");
+         File b = this.GetFileByTitle("FulanoB Cicrano 123Asad");
         
-        System.out.println(a.toString());
-        System.out.println(b.toString());
+         System.out.println(a.toString());
+         System.out.println(b.toString());
         
-        this.MoveFiles(a, b);
-        */
-        
+         this.MoveFiles(a, b);
+         */
         /*
          * Test 3 - Get a folder and move files into it.
          /
-        File target = this.GetFileByTitle("FULANOB CICRANO 123ASAD");
-        for(File file : this.ListAllFiles())
-            if(!file.getId().equals(target.getId()))
-                this.MoveFiles(file, target);
-        */
-        
+         File target = this.GetFileByTitle("FULANOB CICRANO 123ASAD");
+         for(File file : this.ListAllFiles())
+         if(!file.getId().equals(target.getId()))
+         this.MoveFiles(file, target);
+         */
         /*
          * Test 4 - Title matching
-        */
-        
+         */
         //this.moveFilesIntoFolder("FULANOB", "CICRANO", "123ASAD");
-        
     }
 
     public static void main(String args[]) {
