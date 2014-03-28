@@ -48,7 +48,6 @@ public class GoogleDrive {
                 .setAccessType("online")
                 .setApprovalPrompt("auto").build();
         AUTHORIZATION_URI = this.flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build();
-
         this.setCode(codeValidation);
     }
 
@@ -169,10 +168,28 @@ public class GoogleDrive {
     public String GetRedirectURI() {
         return REDIRECT_URI;
     }
-
-    public static ArrayList<File> retrieveAllFiles(Drive service, String queryParameters) throws IOException {
+    
+    public File GetFoldersByUserInformation(String firstName, String lastName, String userID){
+        try{
+            return this.retrieveAllFiles("title contains '" + firstName + "' title contains '" + lastName + "' and title contains '" + userID + "' and mimeType = 'application/vnd.google-apps.folder'" ).get(0);
+        } catch(IOException ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+    public ArrayList<File> GetFilesByTitle(String fileTitle) throws IOException{
+        try{
+            return this.retrieveAllFiles("title contains '" + fileTitle + "'" );
+        } catch(IOException ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+    private ArrayList<File> retrieveAllFiles(String queryParameters) throws IOException {
         ArrayList<File> result = new ArrayList<>();
-        Drive.Files.List request = service.files().list().setQ(queryParameters);
+        Drive.Files.List request = this.service.files().list().setQ(queryParameters);
         result.addAll(request.execute().getItems());
         return result;
     }
@@ -208,9 +225,6 @@ public class GoogleDrive {
         /*
          * Test 4 - Title matching
          */
-        ArrayList<File> files = retrieveAllFiles(this.service, "title contains 'fulanob' and title contains 'cicrano'");
-        for(File file : files)
-            System.out.println(file.getTitle());
     }
 
     public static void main(String args[]) {
