@@ -51,6 +51,10 @@ public class FirstStep {
                         this.service.MoveFiles(aux, studentFolder);
                     }
                 }
+                this.documentsFound.put(student.getLastName() + student.getFirstName() + student.getId(), docFound);
+                this.documentsFound.put(student.getLastName() + student.getFirstName() + student.getId(), docMissing);
+                
+                this.service.MoveFiles(studentFolder, folderPassed);
             }
         }catch(IOException ex){
             ex.printStackTrace();
