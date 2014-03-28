@@ -12,7 +12,6 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.repackaged.org.apache.commons.codec.binary.StringUtils;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
@@ -24,8 +23,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class GoogleDrive {
 
@@ -173,8 +170,8 @@ public class GoogleDrive {
         return REDIRECT_URI;
     }
 
-    private static List<File> retrieveAllFiles(Drive service, String queryParameters) throws IOException {
-        List<File> result = new ArrayList<File>();
+    public static ArrayList<File> retrieveAllFiles(Drive service, String queryParameters) throws IOException {
+        ArrayList<File> result = new ArrayList<>();
         Drive.Files.List request = service.files().list().setQ(queryParameters);
         result.addAll(request.execute().getItems());
         return result;
@@ -211,7 +208,9 @@ public class GoogleDrive {
         /*
          * Test 4 - Title matching
          */
-        //this.moveFilesIntoFolder("FULANOB", "CICRANO", "123ASAD");
+        ArrayList<File> files = retrieveAllFiles(this.service, "title contains 'fulanob' and title contains 'cicrano'");
+        for(File file : files)
+            System.out.println(file.getTitle());
     }
 
     public static void main(String args[]) {
@@ -223,7 +222,7 @@ public class GoogleDrive {
             drive.setCode(br.readLine());
             drive.test();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println(ex.toString());
         }
     }
 

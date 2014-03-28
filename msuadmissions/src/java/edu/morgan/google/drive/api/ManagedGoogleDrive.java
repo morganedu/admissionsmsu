@@ -20,7 +20,7 @@ public class ManagedGoogleDrive {
 
     /**
      * Creates a new instance of GoogleDrive
-     */
+     /
     private DeprecatedGoogleDriveFunctions googleFunctions;
     private String URL;
     public ManagedGoogleDrive() {
@@ -36,5 +36,5 @@ public class ManagedGoogleDrive {
         this.URL = URL;
     }
     
-    
+    */
 }
