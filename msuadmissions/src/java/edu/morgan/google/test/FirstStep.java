@@ -76,6 +76,8 @@ public class FirstStep {
             for(IncompleteStudent student : incompleteStudents){
                 File studentFolder = this.getService().GetFoldersByUserInformation(student.getLastName(), student.getFirstName(), student.getId());
                 
+                System.out.println(student.getLastName() + student.getFirstName() + student.getId());
+                
                 ArrayList<String> list = new ArrayList<>();
                 
                 if(studentFolder == null){
