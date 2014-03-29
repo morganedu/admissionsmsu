@@ -3,120 +3,55 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package edu.morgan.users;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import edu.morgan.studentUser.Record;
+import edu.morgan.studentUser.User;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  *
- * @author pablohpsilva
+ * @author user
  */
 public class IncompleteStudents {
-    private String lastName;
-    private String firstName;
-    private String term;
-    private String checklist;
-    private String id;
-    private String dateOfBirth;
-    private ArrayList<String> documents;
 
-    /**
-     * @return the lastName
-     */
-    public String getLastName() {
-        return lastName;
+    private Gson gson = new GsonBuilder().create();
+    private String jsonObj = "";
+    private ArrayList<IncompleteStudent> students = new ArrayList<>();
+
+    public ArrayList<IncompleteStudent> getStudents() {
+        return students;
     }
 
-    /**
-     * @param lastName the lastName to set
-     */
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setStudents(ArrayList<IncompleteStudent> students) {
+        this.students = students;
     }
 
-    /**
-     * @return the firstName
-     */
-    public String getFirstName() {
-        return firstName;
-    }
+    private void utility() throws Exception {
 
-    /**
-     * @param firstName the firstName to set
-     */
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+        BufferedReader reader = new BufferedReader(new FileReader("/Users/user/Desktop/BAFASE.json"));
+        String line = "";
+        String json = "";
+        while ((line = reader.readLine()) != null) {
+            json += line;
+        }
+        User user = gson.fromJson(json, User.class);
+        ArrayList<Record> rec = (ArrayList) user.getRecords().getRecord();
+        for (int i = 0; i < rec.size(); i++) {
+            IncompleteStudent incompleteStudent = new IncompleteStudent();
+            incompleteStudent.setLastName(rec.get(i).getRow().getE());
+            incompleteStudent.setFirstName(rec.get(i).getRow().getC());
+            incompleteStudent.setId(rec.get(i).getRow().getD());
+            incompleteStudent.setChecklist(rec.get(i).getRow().getA());
+            incompleteStudent.setDateOfBirth(rec.get(i).getRow().getB());
+            incompleteStudent.setDateOfBirth(rec.get(i).getRow().getG());
+            students.add(incompleteStudent);
+        }
 
-    /**
-     * @return the term
-     */
-    public String getTerm() {
-        return term;
-    }
-
-    /**
-     * @param term the term to set
-     */
-    public void setTerm(String term) {
-        this.term = term;
-    }
-
-    /**
-     * @return the checklist
-     */
-    public String getChecklist() {
-        return checklist;
-    }
-
-    /**
-     * @param checklist the checklist to set
-     */
-    public void setChecklist(String checklist) {
-        this.checklist = checklist;
-    }
-
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the dateOfBirth
-     */
-    public String getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    /**
-     * @param dateOfBirth the dateOfBirth to set
-     */
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    /**
-     * @return the documents
-     */
-    public ArrayList<String> getDocuments() {
-        return documents;
-    }
-
-    /**
-     * @param documents the documents to set
-     */
-    public void setDocuments(ArrayList<String> documents) {
-        this.documents = documents;
     }
 }

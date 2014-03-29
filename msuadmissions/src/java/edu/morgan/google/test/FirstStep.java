@@ -52,7 +52,7 @@ public class FirstStep {
                     }
                 }
                 this.documentsFound.put(student.getLastName() + student.getFirstName() + student.getId(), docFound);
-                this.documentsFound.put(student.getLastName() + student.getFirstName() + student.getId(), docMissing);
+                this.documentsMissing.put(student.getLastName() + student.getFirstName() + student.getId(), docMissing);
                 
                 this.service.MoveFiles(studentFolder, folderPassed);
             }
