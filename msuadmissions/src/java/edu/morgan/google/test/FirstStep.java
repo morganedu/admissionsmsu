@@ -24,11 +24,13 @@ public class FirstStep {
     private GoogleDrive service;
     private HashMap<String, ArrayList<String>> documentsMissing;
     private HashMap<String, ArrayList<String>> documentsFound;
+    private ArrayList<File> allFolders;
     
     public FirstStep(){
         this.service = new GoogleDrive();
         this.documentsFound = new HashMap<>();
         this.documentsMissing = new HashMap<>();
+        this.allFolders = new ArrayList<>();
     }
     /*
     public void execute(ArrayList<IncompleteStudent> incompleteStudents){
@@ -65,6 +67,9 @@ public class FirstStep {
     
     public void executePartOne(ArrayList<IncompleteStudent> incompleteStudents){
         try{
+            //Get all folders from server and use it to save time!
+            //this.allFolders = this.service.getAllFolders();
+            
             //Create a folder called PASSED
             File folderPassed = this.getService().GetFolderOrCreate("PASSED","","");
 
