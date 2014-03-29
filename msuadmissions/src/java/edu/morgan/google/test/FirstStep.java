@@ -60,17 +60,6 @@ public class FirstStep {
         }catch(IOException ex){
             ex.printStackTrace();
         }
-        
-        System.out.println("  " + this.service.GetAuthorizationLink());
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            this.service.setCode(br.readLine());
-            
-            //
-            
-        } catch (Exception ex) {
-            System.out.println(ex.toString());
-        }
     }
     */
     
@@ -94,17 +83,6 @@ public class FirstStep {
             }
         }catch(IOException ex){
             ex.printStackTrace();
-        }
-        
-        System.out.println("  " + this.service.GetAuthorizationLink());
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            this.service.setCode(br.readLine());
-            
-            //
-            
-        } catch (Exception ex) {
-            System.out.println(ex.toString());
         }
     }
 }
