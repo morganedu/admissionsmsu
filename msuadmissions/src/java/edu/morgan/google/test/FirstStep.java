@@ -24,6 +24,7 @@ public class FirstStep {
     private GoogleDrive service;
     private HashMap<String, ArrayList<String>> documentsMissing;
     private HashMap<String, ArrayList<String>> documentsFound;
+    private HashMap<String, File> studentFoldersJson;
     private ArrayList<File> allFolders;
     
     public FirstStep(){
@@ -31,6 +32,7 @@ public class FirstStep {
         this.documentsFound = new HashMap<>();
         this.documentsMissing = new HashMap<>();
         this.allFolders = new ArrayList<>();
+        this.studentFoldersJson = new HashMap<>();
     }
     /*
     public void execute(ArrayList<IncompleteStudent> incompleteStudents){
@@ -63,6 +65,16 @@ public class FirstStep {
             ex.printStackTrace();
         }
     }
+    
+    
+    public void generateHashMapFromFolders(){
+        ArrayList<File> folders = this.service.getAllFolders();
+        for(File file : folders){
+            String key = file.getTitle().replace("_"," ");
+            this.studentFoldersJson.put(key, file);
+        }
+        System.out.println(this.studentFoldersJson.size());
+    }
     */
     
     public void executePartOne(ArrayList<IncompleteStudent> incompleteStudents){
@@ -74,7 +86,7 @@ public class FirstStep {
             File folderPassed = this.getService().GetFolderOrCreate("PASSED");
 
             for(IncompleteStudent student : incompleteStudents){
-                File studentFolder = this.getService().GetFoldersByUserInformation(student.getLastName(), student.getFirstName(), student.getId());
+                File studentFolder = this.getService().getFolderByStudentInfo(student.getLastName(), student.getFirstName(), student.getId());
                 
                 System.out.println(student.getLastName() + student.getFirstName() + student.getId());
                 
@@ -88,6 +100,7 @@ public class FirstStep {
                     this.getService().MoveFiles(studentFolder, folderPassed);
                 }
             }
+            System.out.println(this.documentsFound.toString());
         }catch(IOException ex){
             ex.printStackTrace();
         }
@@ -101,8 +114,12 @@ public class FirstStep {
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             fs.service.setCode(br.readLine());
             
+            //fs.generateHashMapFromFolders();
+            
+            ///*
             is.utility();
             fs.executePartOne(is.getStudents());
+            //*/
         }
         catch(Exception ex){
             ex.printStackTrace();

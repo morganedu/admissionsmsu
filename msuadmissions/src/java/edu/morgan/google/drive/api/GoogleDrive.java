@@ -234,6 +234,22 @@ public class GoogleDrive {
         }
     }
     
+    public File getFolderByStudentInfo(String lastName, String firstName, String studentID){
+        try{
+            ArrayList<File> files = (ArrayList) retrieveAllFiles("title contains '" + lastName + "' and mimeType = 'application/vnd.google-apps.folder'");
+            for (File filed : files) {
+                String title = filed.getTitle().replaceAll("_", " ");
+                if (!firstName.equals("") && title.contains(firstName) && title.contains(studentID)) {
+                    return filed;
+                }
+            }
+            return null;
+        } catch(IOException ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
     public ArrayList<File> getAllFolders(){
         try{
             return this.retrieveAllFiles("mimeType = 'application/vnd.google-apps.folder'");
@@ -283,6 +299,8 @@ public class GoogleDrive {
          */
         
         //System.out.println(this.retrieveAllFiles("mimeType = 'application/vnd.google-apps.folder'"));
+        //ArrayList<File> files = this.getAllFoldersLastName("davis", "thomas");
+        //System.out.println(files.toString());
         
     }
 
