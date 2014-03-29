@@ -32,7 +32,7 @@ public class IncompleteStudents {
         this.students = students;
     }
 
-    private void utility() throws Exception {
+    public void utility() throws Exception {
 
         BufferedReader reader = new BufferedReader(new FileReader("/Users/user/Desktop/BAFASE.json"));
         String line = "";
