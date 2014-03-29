@@ -165,7 +165,12 @@ public class GoogleDrive {
     
     public File GetFoldersByUserInformation(String firstName, String lastName, String userID){
         try{
-            return this.retrieveAllFiles("title contains '" + firstName + "' title contains '" + lastName + "' and title contains '" + userID + "' and mimeType = 'application/vnd.google-apps.folder'" ).get(0);
+            String execution = "title contains '" + firstName + "' title contains '" + lastName;
+            if(userID != "" || userID != null)
+                execution += "' and title contains '" + userID;
+            execution += "' and mimeType = 'application/vnd.google-apps.folder'";
+            
+            return this.retrieveAllFiles(execution).get(0);
         } catch(IOException ex){
             ex.printStackTrace();
             return null;
