@@ -66,10 +66,10 @@ public class FirstStep {
     public void executePartOne(ArrayList<IncompleteStudent> incompleteStudents){
         try{
             //Create a folder called PASSED
-            File folderPassed = this.service.GetFolderOrCreate("PASSED","","");
+            File folderPassed = this.getService().GetFolderOrCreate("PASSED","","");
 
             for(IncompleteStudent student : incompleteStudents){
-                File studentFolder = this.service.GetFoldersByUserInformation(student.getLastName(), student.getFirstName(), student.getId());
+                File studentFolder = this.getService().GetFoldersByUserInformation(student.getLastName(), student.getFirstName(), student.getId());
                 
                 ArrayList<String> list = new ArrayList<>();
                 
@@ -78,11 +78,34 @@ public class FirstStep {
                 }else{
                     list.add(studentFolder.getTitle());
                     this.documentsFound.put(student.getLastName() + student.getFirstName() + student.getId(),list);
-                    this.service.MoveFiles(studentFolder, folderPassed);
+                    this.getService().MoveFiles(studentFolder, folderPassed);
                 }
             }
         }catch(IOException ex){
             ex.printStackTrace();
         }
+    }
+    
+    public static void main(String args[]){
+        IncompleteStudents is = new IncompleteStudents();
+        FirstStep fs = new FirstStep();
+        try{
+            System.out.println("  " + fs.getService().GetAuthorizationLink());
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            fs.service.setCode(br.readLine());
+            
+            is.utility();
+            fs.executePartOne(is.getStudents());
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * @return the service
+     */
+    public GoogleDrive getService() {
+        return service;
     }
 }
