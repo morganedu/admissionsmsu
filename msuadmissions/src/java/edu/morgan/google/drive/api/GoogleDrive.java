@@ -163,6 +163,29 @@ public class GoogleDrive {
         }
     }
     
+    public File GetFolderOrCreate(String firstName){
+        File folder = this.GetFoldersByUserInformation(firstName);
+        if(folder == null)
+            folder = this.CreateFolder(firstName);
+        return folder;
+    }
+    
+    public File GetFoldersByUserInformation(String firstName){
+        try{
+            String execution = "";
+            execution += "title contains '" + firstName + "' ";
+            execution += "and mimeType = 'application/vnd.google-apps.folder'";
+            
+            File file = this.retrieveAllFiles(execution).get(0);
+            return file;
+            
+        } catch(Exception ex){
+            //ex.printStackTrace();
+            System.out.println(ex.toString());
+            return null;
+        }
+    }
+    
     public File GetFoldersByUserInformation(String firstName, String lastName, String userID){
         try{
             String execution = "";

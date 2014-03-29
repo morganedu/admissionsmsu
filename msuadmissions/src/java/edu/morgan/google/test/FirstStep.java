@@ -71,7 +71,7 @@ public class FirstStep {
             //this.allFolders = this.service.getAllFolders();
             
             //Create a folder called PASSED
-            File folderPassed = this.getService().GetFolderOrCreate("PASSED","","");
+            File folderPassed = this.getService().GetFolderOrCreate("PASSED");
 
             for(IncompleteStudent student : incompleteStudents){
                 File studentFolder = this.getService().GetFoldersByUserInformation(student.getLastName(), student.getFirstName(), student.getId());
