@@ -197,23 +197,34 @@ public class GoogleDrive {
         }
     }
     
-    public File GetFoldersByUserInformation(String firstName, String lastName, String userID){
-        try{
-            String execution = "";
+    private String createQueryString(String operator, String firstName, String lastName, String userID, String documentTitle){
+        String execution = "";
             
-            if(!firstName.equals(""))
-                execution += "title contains '" + firstName + "' ";
+            if(!documentTitle.equals(""))
+                execution += operator + " contains '" + documentTitle + "' ";
+            
+            if(!firstName.equals("") && !documentTitle.equals(""))
+                execution += operator + " and contains '" + firstName + "' ";
+            else
+                execution += operator + " contains '" + firstName + "' ";
             
             if(!lastName.equals("") && !firstName.equals(""))
-                    execution += "and title contains '" + lastName + "' ";
+                    execution += "and "+ operator +" contains '" + lastName + "' ";
             else
-                execution += "title contains '" + lastName + "' ";
+                execution += operator + " contains '" + lastName + "' ";
             
             if(!userID.equals("") && !firstName.equals("") || 
                !userID.equals("") && !lastName.equals("") )
-                execution += "and title contains '" + userID + "' ";
+                execution += "and "+ operator +" contains '" + userID + "' ";
             else
-                execution += "title contains '" + userID + "' ";
+                execution += operator + " contains '" + userID + "' ";
+            
+        return execution;
+    }
+    
+    public File GetFoldersByUserInformation(String firstName, String lastName, String userID){
+        try{
+            String execution = this.createQueryString("title", firstName, lastName, userID, "");
             
             execution += "and mimeType = 'application/vnd.google-apps.folder'";
             
@@ -239,6 +250,17 @@ public class GoogleDrive {
     public File GetFileByTitle(String fileTitle){
         try{
             return this.retrieveAllFiles("title contains '" + fileTitle + "' and mimeType != 'application/vnd.google-apps.folder'" ).get(0);
+        } catch(IOException ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+    public ArrayList<File> GetFileByStudendInfo(String lastName, String firstName, String studentID, String fileTitle){
+        try{
+            String execution = this.createQueryString("fullText", firstName, lastName, "", fileTitle);
+            execution += "' and mimeType != 'application/vnd.google-apps.folder'";
+            return this.retrieveAllFiles(execution);
         } catch(IOException ex){
             ex.printStackTrace();
             return null;

@@ -22,8 +22,8 @@ import java.util.HashMap;
  */
 public class FirstStep {
     private GoogleDrive service;
-    private HashMap<String, ArrayList<String>> documentsMissing;
-    private HashMap<String, ArrayList<String>> documentsFound;
+    private HashMap<IncompleteStudent, ArrayList<String>> documentsMissing;
+    private HashMap<IncompleteStudent, ArrayList<String>> documentsFound;
     private HashMap<String, File> studentFoldersJson;
     private ArrayList<File> allFolders;
     
@@ -31,8 +31,6 @@ public class FirstStep {
         this.service = new GoogleDrive();
         this.documentsFound = new HashMap<>();
         this.documentsMissing = new HashMap<>();
-        this.allFolders = new ArrayList<>();
-        this.studentFoldersJson = new HashMap<>();
     }
     /*
     public void execute(ArrayList<IncompleteStudent> incompleteStudents){
@@ -82,16 +80,24 @@ public class FirstStep {
         ArrayList<String> listFound = new ArrayList<>();
 
         //Check this... Get the list of documents missing
-        for(String doc : student.getChecklist().split("#/c000")){
-            File studentFile = this.getService().GetFileByTitle(doc);
+        for(String doc : student.getChecklist().split("\\u000b")){
+            ArrayList<File> studentFile = this.getService().GetFileByStudendInfo(student.getLastName(), student.getFirstName(), student.getId(), doc);
+            /*
+            for(File file : studentFile){
+                String title = file.getTitle().replaceAll("_", " ");
+                if (!firstName.equals("") && title.contains(firstName)) {
+                    return filed;
+                }
+            }
+            */
             if(studentFile == null)
                 listMissing.add(doc);
             else{ 
                 listFound.add(doc);
                 this.getService().MoveFiles(studentFile, studentFolder);
             }
-            this.documentsMissing.put(student.getLastName() + student.getFirstName() + student.getId(), listMissing);
-            this.documentsFound.put(student.getLastName() + student.getFirstName() + student.getId(), listFound);
+            this.documentsMissing.put(student, listMissing);
+            this.documentsFound.put(student, listFound);
         }
     }
     
@@ -107,7 +113,7 @@ public class FirstStep {
 
             for(IncompleteStudent student : incompleteStudents){
                 
-// Debug purposes ONLY \/
+                // Debug purposes ONLY \/
                 System.out.println(student.getLastName() + student.getFirstName() + student.getId());
                 // Debug purposes ONLY /\
                 
