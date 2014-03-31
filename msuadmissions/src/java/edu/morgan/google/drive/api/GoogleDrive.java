@@ -68,7 +68,7 @@ public class GoogleDrive {
             CODE_VALIDATION = code;
             GoogleTokenResponse response = this.flow.newTokenRequest(CODE_VALIDATION).setRedirectUri(REDIRECT_URI).execute();
             GoogleCredential credential = new GoogleCredential().setFromTokenResponse(response);
-            this.service = new Drive.Builder(this.httpTransport, this.jsonFactory, credential).build();
+            this.setService(new Drive.Builder(this.httpTransport, this.jsonFactory, credential).build());
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -83,7 +83,7 @@ public class GoogleDrive {
             File body = new File();
             body.setTitle(ownerName.trim());
             body.setMimeType("application/vnd.google-apps.folder");
-            return this.service.files().insert(body).execute();
+            return (File)this.getService().files().insert(body).execute();
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
@@ -100,11 +100,11 @@ public class GoogleDrive {
     public File MoveFiles(Object fileFrom, Object fileTo) throws IOException {
         File file, target;
         if (fileFrom.getClass().equals("String")) {
-            file = this.service.files().get((String) fileFrom).execute();
-            target = this.service.files().get((String) fileTo).execute();
+            file = this.getService().files().get((String) fileFrom).execute();
+            target = this.getService().files().get((String) fileTo).execute();
         } else {
-            file = this.service.files().get(((File) fileFrom).getId()).execute();
-            target = this.service.files().get(((File) fileTo).getId()).execute();
+            file = this.getService().files().get(((File) fileFrom).getId()).execute();
+            target = this.getService().files().get(((File) fileTo).getId()).execute();
         }
 
         ParentReference newParent = new ParentReference();
@@ -118,12 +118,12 @@ public class GoogleDrive {
         parentsList.add(newParent);
         file.setParents(parentsList);
 
-        return this.service.files().update(file.getId(), file).execute();
+        return (File) this.getService().files().update(file.getId(), file).execute();
     }
 
     public File GetFileById(String fileId) {
         try {
-            File file = this.service.files().get(fileId).execute();
+            File file = this.getService().files().get(fileId).execute();
             return file;
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -133,7 +133,7 @@ public class GoogleDrive {
 
     public ArrayList<File> ListAllFiles() {
         try {
-            Drive.Files.List list = this.service.files().list();
+            Drive.Files.List list = this.getService().files().list();
             FileList fileList = list.execute();
             ArrayList<File> arrayListFiles = (ArrayList) fileList.getItems();
             return arrayListFiles;
@@ -317,7 +317,7 @@ public class GoogleDrive {
     
     private ArrayList<File> retrieveAllFiles(String queryParameters) throws IOException {
         ArrayList<File> result = new ArrayList<>();
-        Drive.Files.List request = this.service.files().list().setQ(queryParameters);
+        Drive.Files.List request = this.getService().files().list().setQ(queryParameters);
         result.addAll(request.execute().getItems());
         return result;
     }
@@ -371,6 +371,20 @@ public class GoogleDrive {
         } catch (Exception ex) {
             System.out.println(ex.toString());
         }
+    }
+
+    /**
+     * @return the service
+     */
+    public Drive getService() {
+        return service;
+    }
+
+    /**
+     * @param service the service to set
+     */
+    public void setService(Drive service) {
+        this.service = service;
     }
 
 }
