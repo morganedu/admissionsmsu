@@ -77,6 +77,24 @@ public class FirstStep {
     }
     */
     
+    private void MoveFilesToFolder(IncompleteStudent student, File studentFolder) throws IOException{
+        ArrayList<String> listMissing = new ArrayList<>();
+        ArrayList<String> listFound = new ArrayList<>();
+
+        //Check this... Get the list of documents missing
+        for(String doc : student.getChecklist().split("#/c000")){
+            File studentFile = this.getService().GetFileByTitle(doc);
+            if(studentFile == null)
+                listMissing.add(doc);
+            else{ 
+                listFound.add(doc);
+                this.getService().MoveFiles(studentFile, studentFolder);
+            }
+            this.documentsMissing.put(student.getLastName() + student.getFirstName() + student.getId(), listMissing);
+            this.documentsFound.put(student.getLastName() + student.getFirstName() + student.getId(), listFound);
+        }
+    }
+    
     public void executePartOne(ArrayList<IncompleteStudent> incompleteStudents){
         try{
             //Get all folders from server and use it to save time!
@@ -84,20 +102,32 @@ public class FirstStep {
             
             //Create a folder called PASSED
             File folderPassed = this.getService().GetFolderOrCreate("PASSED");
+            File folderPassed2 = this.getService().GetFolderOrCreate("PASSED2");
+            File folderPassed3 = this.getService().GetFolderOrCreate("PASSED3");
 
             for(IncompleteStudent student : incompleteStudents){
+                
+// Debug purposes ONLY \/
+                System.out.println(student.getLastName() + student.getFirstName() + student.getId());
+                // Debug purposes ONLY /\
+                
+                
                 File studentFolder = this.getService().getFolderByStudentInfo(student.getLastName(), student.getFirstName(), student.getId());
                 
-                System.out.println(student.getLastName() + student.getFirstName() + student.getId());
-                
-                ArrayList<String> list = new ArrayList<>();
-                
+                // If The student folder doesn't exist, create it.
                 if(studentFolder == null){
-                    this.documentsMissing.put(student.getLastName() + student.getFirstName() + student.getId(), list);
-                }else{
-                    list.add(studentFolder.getTitle());
-                    this.documentsFound.put(student.getLastName() + student.getFirstName() + student.getId(),list);
-                    this.getService().MoveFiles(studentFolder, folderPassed);
+                    studentFolder = this.getService().CreateFolder(student.getLastName() + "_" + student.getFirstName()  + "_" +  student.getId() + "_" + student.getTerm());
+                    this.MoveFilesToFolder(student, studentFolder);
+                    this.getService().MoveFiles(studentFolder, folderPassed3);
+                } else{
+                    if(student.getId().equals("")){
+                        this.MoveFilesToFolder(student, studentFolder);
+                        this.getService().MoveFiles(studentFolder, folderPassed2);
+                    }
+                    else{
+                        this.MoveFilesToFolder(student, studentFolder);
+                        this.getService().MoveFiles(studentFolder, folderPassed);
+                    }
                 }
             }
             System.out.println(this.documentsFound.toString());

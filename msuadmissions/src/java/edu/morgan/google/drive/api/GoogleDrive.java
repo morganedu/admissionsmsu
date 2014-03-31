@@ -81,7 +81,7 @@ public class GoogleDrive {
     public File CreateFolder(String ownerName) {
         try {
             File body = new File();
-            body.setTitle(ownerName.trim().toUpperCase());
+            body.setTitle(ownerName.trim());
             body.setMimeType("application/vnd.google-apps.folder");
             return this.service.files().insert(body).execute();
         } catch (IOException ex) {
@@ -178,6 +178,17 @@ public class GoogleDrive {
             
             File file = this.retrieveAllFiles(execution).get(0);
             return file;
+            
+        } catch(Exception ex){
+            //ex.printStackTrace();
+            System.out.println(ex.toString());
+            return null;
+        }
+    }
+    
+    public ArrayList<File> GetAllFiles(){
+        try{
+            return this.retrieveAllFiles("mimeType != 'application/vnd.google-apps.folder'");
             
         } catch(Exception ex){
             //ex.printStackTrace();
