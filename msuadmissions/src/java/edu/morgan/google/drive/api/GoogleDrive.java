@@ -155,7 +155,7 @@ public class GoogleDrive {
         try{
             File folder = this.GetFoldersByUserInformation(firstName, lastName, userID);
             if(folder == null)
-                folder = this.CreateFolder(lastName, firstName, userID);
+                folder = this.CreateFolder(lastName.replaceAll("'", "\\'"), firstName.replaceAll("'", "\\'"), userID);
             return folder;
         } catch(IOException ex){
             ex.printStackTrace();
@@ -164,7 +164,7 @@ public class GoogleDrive {
     }
     
     public File GetFolderOrCreate(String firstName){
-        File folder = this.GetFoldersByUserInformation(firstName);
+        File folder = this.GetFoldersByUserInformation(firstName.replaceAll("'", "\\'"));
         if(folder == null)
             folder = this.CreateFolder(firstName);
         return folder;
@@ -180,7 +180,6 @@ public class GoogleDrive {
             return file;
             
         } catch(Exception ex){
-            //ex.printStackTrace();
             System.out.println(ex.toString());
             return null;
         }
@@ -197,27 +196,32 @@ public class GoogleDrive {
         }
     }
     
-    private String createQueryString(String operator, String firstName, String lastName, String userID, String documentTitle){
+    private String createQueryString(String operator, String lastName, String firstName, String userID, String documentTitle){
         String execution = "";
             
             if(!documentTitle.equals(""))
                 execution += operator + " contains '" + documentTitle + "' ";
             
-            if(!firstName.equals("") && !documentTitle.equals(""))
-                execution += operator + " and contains '" + firstName + "' ";
-            else
-                execution += operator + " contains '" + firstName + "' ";
+            if(!lastName.equals("")){
+                if(!documentTitle.equals(""))
+                    execution += " and " + operator + " contains '" + lastName + "' ";
+                else
+                    execution += operator + " contains '" + lastName + "' ";
+            }
             
-            if(!lastName.equals("") && !firstName.equals(""))
-                    execution += "and "+ operator +" contains '" + lastName + "' ";
-            else
-                execution += operator + " contains '" + lastName + "' ";
+            if(!firstName.equals("")){
+                if(!lastName.equals(""))
+                    execution += " and "+ operator + " contains '" + firstName + "' ";
+                else
+                    execution += operator + " contains '" + firstName + "' ";
+            }
             
-            if(!userID.equals("") && !firstName.equals("") || 
-               !userID.equals("") && !lastName.equals("") )
-                execution += "and "+ operator +" contains '" + userID + "' ";
-            else
-                execution += operator + " contains '" + userID + "' ";
+            if(!userID.equals("")){
+                if(!lastName.equals("") || !firstName.equals(""))
+                    execution += " and "+ operator +" contains '" + userID + "' ";
+                else
+                    execution += operator + " contains '" + userID + "' ";
+            }
             
         return execution;
     }
@@ -256,14 +260,33 @@ public class GoogleDrive {
         }
     }
     
-    public ArrayList<File> GetFileByStudendInfo(String lastName, String firstName, String studentID, String fileTitle){
+    public ArrayList<File> GetFileByStudentInfo(String lastName, String firstName, String fileTitle){
         try{
-            String execution = this.createQueryString("fullText", firstName, lastName, "", fileTitle);
-            execution += "' and mimeType != 'application/vnd.google-apps.folder'";
+            String execution = this.createQueryString("fullText", lastName.replaceAll("'", "\\'"), firstName.replaceAll("'", "\\'"), "", fileTitle.replaceAll("'", "\\'"));
+            execution += " and mimeType != 'application/vnd.google-apps.folder'";
             return this.retrieveAllFiles(execution);
         } catch(IOException ex){
-            ex.printStackTrace();
-            return null;
+            System.out.println(ex.toString());
+            return new ArrayList<>();
+        }
+    }
+    
+    public ArrayList<File> GetFileStudentInfo(String lastName, String firstName, String fileTitle){
+        try{
+            String execution = this.createQueryString("fullText", lastName.replaceAll("'", "\\'"), firstName.replaceAll("'", "\\'"), "", fileTitle.replaceAll("'", "\\'"));
+            execution += " and mimeType != 'application/vnd.google-apps.folder'";
+            //return this.retrieveAllFiles(execution);
+            
+            ArrayList<File> files = (ArrayList) retrieveAllFiles("title contains '" + lastName + "' and mimeType != 'application/vnd.google-apps.folder'");
+            for (File file : files) {
+                String title = file.getTitle().replaceAll("_", " ");
+                if (!firstName.equals("") && !title.contains(firstName) && !title.contains(fileTitle))
+                    files.remove(file);
+            }
+            return files;
+        } catch(IOException ex){
+            System.out.println(ex.toString());
+            return new ArrayList<>();
         }
     }
     
