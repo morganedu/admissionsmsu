@@ -40,7 +40,7 @@ public class FirstStep {
     private void printIncompleteStudent(IncompleteStudent student){
         System.out.println();
         System.out.println("Student: "+student.getLastName() + ", " + student.getFirstName());
-        System.out.println("Term: " + student.getType());
+        System.out.println("Type: " + student.getType());
     }
 
     private void MoveFilesToFolder(IncompleteStudent student, File studentFolder) throws IOException {
