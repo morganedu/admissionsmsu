@@ -70,6 +70,7 @@ public class IncompleteStudents {
             row.setA(student.getChecklist());
             row.setB(student.getDateOfBirth());
             row.setG(student.getTerm());
+            row.setT(student.getType());
             auxRecord.setRow(row);
             record.add(auxRecord);
         }
