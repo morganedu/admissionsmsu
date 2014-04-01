@@ -166,23 +166,25 @@ public class FirstStep {
     public static void main(String args[]) throws IOException {
         IncompleteStudents is = new IncompleteStudents();
         FirstStep fs = new FirstStep();
-        try {
-            is.utility();
-            fs.runScript(is);
-            is.generateJSON(is.convertToUsers(fs.getCheckedStudents()),"CheckedStudents");
-            
-        } catch (Exception ex) {
-            System.out.println(ex.toString() + " " + ex.getMessage() + " " + ex.getLocalizedMessage());
-            ///*
-            try{
-                //fs.generateMustCheckList();
-                //is.generateJSON(is.convertToUsers(fs.getMustCheckStudents()),"mustCheckStudents");
-                //fs.runScript(is);
-             }catch(Exception e){
-                System.out.println(e.toString() + " " + e.getMessage() + " " + e.getLocalizedMessage());
-             }
-             System.out.println("Back in main");
-            //*/
+        while(true){
+            try {
+                is.utility();
+                fs.runScript(is);
+                is.generateJSON(is.convertToUsers(fs.getCheckedStudents()),"CheckedStudents");
+
+            } catch (Exception ex) {
+                System.out.println(ex.toString() + " " + ex.getMessage() + " " + ex.getLocalizedMessage());
+                ///*
+                try{
+                    //fs.generateMustCheckList();
+                    //is.generateJSON(is.convertToUsers(fs.getMustCheckStudents()),"mustCheckStudents");
+                    //fs.runScript(is);
+                 }catch(Exception e){
+                    System.out.println(e.toString() + " " + e.getMessage() + " " + e.getLocalizedMessage());
+                 }
+                 System.out.println("Back in main");
+                //*/
+            }
         }
     }
 }
