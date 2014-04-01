@@ -36,6 +36,7 @@ public class GoogleDrive {
     private JsonFactory jsonFactory;
     private GoogleAuthorizationCodeFlow flow;
     private Drive service;
+    private GoogleCredential credential;
 
     //public GoogleDrive(String redirectUri) {
     public GoogleDrive(String codeValidation) {
@@ -58,17 +59,20 @@ public class GoogleDrive {
 
         this.flow = new GoogleAuthorizationCodeFlow.Builder(
                 this.httpTransport, this.jsonFactory, CLIENT_ID, CLIENT_SECRET, Arrays.asList(DriveScopes.DRIVE, DriveScopes.DRIVE_APPDATA, DriveScopes.DRIVE_APPS_READONLY, DriveScopes.DRIVE_FILE, DriveScopes.DRIVE_METADATA_READONLY))
-                .setAccessType("online")
-                .setApprovalPrompt("auto").build();
+                .setAccessType("offline")
+                .setApprovalPrompt("force").build();
         AUTHORIZATION_URI = this.flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build();
+        
+
     }
 
     public void setCode(String code) {
         try {
             CODE_VALIDATION = code;
             GoogleTokenResponse response = this.flow.newTokenRequest(CODE_VALIDATION).setRedirectUri(REDIRECT_URI).execute();
-            GoogleCredential credential = new GoogleCredential().setFromTokenResponse(response);
-            this.setService(new Drive.Builder(this.httpTransport, this.jsonFactory, credential).build());
+            String accessToken = response.getAccessToken();
+            GoogleCredential credential = new GoogleCredential().setFromTokenResponse(response).setAccessToken(accessToken);
+            this.setService(new Drive.Builder(this.httpTransport, this.jsonFactory, credential).setApplicationName("Admissions GoogleDrive Manager").build());
         } catch (IOException ex) {
             ex.printStackTrace();
         }
