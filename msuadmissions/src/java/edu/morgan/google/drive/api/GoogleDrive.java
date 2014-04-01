@@ -45,8 +45,8 @@ public class GoogleDrive {
 
         this.flow = new GoogleAuthorizationCodeFlow.Builder(
                 this.httpTransport, this.jsonFactory, CLIENT_ID, CLIENT_SECRET, Arrays.asList(DriveScopes.DRIVE, DriveScopes.DRIVE_APPDATA, DriveScopes.DRIVE_APPS_READONLY, DriveScopes.DRIVE_FILE, DriveScopes.DRIVE_METADATA_READONLY))
-                .setAccessType("online")
-                .setApprovalPrompt("auto").build();
+                .setAccessType("offline")
+                .setApprovalPrompt("force").build();
         AUTHORIZATION_URI = this.flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build();
         this.setCode(codeValidation);
     }
