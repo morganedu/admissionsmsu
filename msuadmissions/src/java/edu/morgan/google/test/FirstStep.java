@@ -13,33 +13,27 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author pablohpsilva
  */
 public class FirstStep {
+
     private GoogleDrive service;
     private ArrayList<IncompleteStudent> checkedStudents;
-    /*
-    private ArrayList<IncompleteStudent> mustCheckStudents;
-    private ArrayList<IncompleteStudent> missingStudents;
-    private ArrayList<IncompleteStudent> foundStudents;
-    */
-    
+    private ArrayList<IncompleteStudent> backupStudents = null;
+
     public FirstStep() {
         this.service = new GoogleDrive();
         this.checkedStudents = new ArrayList<>();
-        /*
-        this.missingStudents = new ArrayList<>();
-        this.foundStudents = new ArrayList<>();
-        this.mustCheckStudents = new ArrayList<>();
-        */
     }
-    
-    private void printIncompleteStudent(IncompleteStudent student){
+
+    private void printIncompleteStudent(IncompleteStudent student) {
         System.out.println();
-        System.out.println("Student: "+student.getLastName() + ", " + student.getFirstName());
+        System.out.println("Student: " + student.getLastName() + ", " + student.getFirstName());
         System.out.println("Type: " + student.getType());
     }
 
@@ -48,29 +42,14 @@ public class FirstStep {
         System.out.println("\tMoveFilesToFolder method: Checklist:  ");
 
         if (!student.getChecklist().equals("")) {
-            // Separate checklist by string
             student.setChecklist(student.getChecklist().replaceAll("\\u000b", "::"));
             String[] documents = student.getChecklist().split("::");
-            
-            // Get all files from student from GoogleDrive
             ArrayList<File> studentFiles = this.getService().GetFileStudentInfo(student.getLastName(), student.getFirstName(), "");
-            
-            /*
-            if (studentFiles.isEmpty()) {
-                this.missingStudents.add(student);
-            } else {
-            */
             if (!studentFiles.isEmpty()) {
-                // For each string from var documents, do the loop
                 for (String documentTitle : documents) {
                     System.out.print(documentTitle + ";");
-                    // For each File from var studentFiles, do the loop
                     for (File file : studentFiles) {
                         String title = file.getTitle().replaceAll("_", " ");
-
-                        // If the file contains the same title as the checklist, the last name and first name
-                        // add that file to the documentsFound Hashmap, remove that name from var student checklist
-                        // and move the file to the student folder.
                         if (title.contains(documentTitle)) {
                             if (!student.getLastName().equals("") && title.contains(student.getLastName())) {
                                 if (!student.getFirstName().equals("") && title.contains(student.getFirstName())) {
@@ -82,28 +61,19 @@ public class FirstStep {
                         }
                     }
                 }
-                if (student.getChecklist().equals("") || student.getChecklist().contains("^*:*$")){
+                if (student.getChecklist().equals("") || student.getChecklist().contains("^*:*$")) {
                     student.setChecklist("COMPLETE");
-                    //this.foundStudents.add(student);
                     this.getCheckedStudents().add(student);
-                }/*
-                else{
-                    this.missingStudents.add(student);
-                }*/
+                }
             }
         } else {
             student.setChecklist("COMPLETE");
-            //this.foundStudents.add(student);
             this.getCheckedStudents().add(student);
         }
     }
 
     public void executePartOne(ArrayList<IncompleteStudent> incompleteStudents) {
         try {
-            //Get all folders from server and use it to save time!
-            //this.allFolders = this.service.getAllFolders();
-
-            //Create a folder called PASSED
             File folderPassed1 = this.getService().GetFolderOrCreate("PASSED1");
             File folderPassed2 = this.getService().GetFolderOrCreate("PASSED2");
             File folderPassed3 = this.getService().GetFolderOrCreate("PASSED3");
@@ -128,7 +98,8 @@ public class FirstStep {
                     }
                 }
                 this.getCheckedStudents().add(student);
-                //System.out.println("Incomplete Students checked: " + this.getCheckedStudents().size() + " / " + this.getMissingStudents().size());
+                this.backupStudents.remove(student);
+                System.out.println("Incomplete Students checked: " + this.checkedStudents.size() + " / " + incompleteStudents.size());
             }
         } catch (IOException ex) {
             System.out.println("Back in executePartOne");
@@ -140,15 +111,19 @@ public class FirstStep {
         System.out.println(this.getService().GetAuthorizationLink());
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         this.service.setCode(br.readLine());
-        this.executePartOne(is.getStudents());
+        
+        if(this.backupStudents == null){
+            this.backupStudents = new ArrayList<>();
+            this.backupStudents = (ArrayList<IncompleteStudent>) is.getStudents().clone();
+            this.executePartOne(is.getStudents());
+        }
+        else{
+            ArrayList<IncompleteStudent> aux = new ArrayList<>();
+            aux = (ArrayList<IncompleteStudent>) this.backupStudents.clone();
+            this.executePartOne(aux);
+        }
     }
-    /*
-    public void generateMustCheckList(){
-        for(IncompleteStudent student : this.getCheckedStudents())
-            this.getMustCheckStudents().remove(student);
-    }
-    */
-    
+
     /**
      * @return the service
      */
@@ -162,27 +137,28 @@ public class FirstStep {
     public ArrayList<IncompleteStudent> getCheckedStudents() {
         return checkedStudents;
     }
-    
+
     public static void main(String args[]) throws IOException {
         IncompleteStudents is = new IncompleteStudents();
         FirstStep fs = new FirstStep();
-        while(true){
+        while (true) {
             try {
                 is.utility();
                 fs.runScript(is);
-                is.generateJSON(is.convertToUsers(fs.getCheckedStudents()),"CheckedStudents");
+                is.generateJSON(is.convertToUsers(fs.getCheckedStudents()), "CheckedStudents");
 
             } catch (Exception ex) {
                 System.out.println(ex.toString() + " " + ex.getMessage() + " " + ex.getLocalizedMessage());
                 ///*
-                try{
-                    //fs.generateMustCheckList();
-                    //is.generateJSON(is.convertToUsers(fs.getMustCheckStudents()),"mustCheckStudents");
-                    //fs.runScript(is);
-                 }catch(Exception e){
-                    System.out.println(e.toString() + " " + e.getMessage() + " " + e.getLocalizedMessage());
-                 }
-                 System.out.println("Back in main");
+                try {
+                    is.utility();
+                    fs.runScript(is);
+                    is.generateJSON(is.convertToUsers(fs.getCheckedStudents()), "CheckedStudents");
+                } catch (Exception ex1) {
+                    Logger.getLogger(FirstStep.class.getName()).log(Level.SEVERE, null, ex1);
+                }
+                return;
+                 //System.out.println("Back in main");
                 //*/
             }
         }
