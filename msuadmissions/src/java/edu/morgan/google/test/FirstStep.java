@@ -105,43 +105,47 @@ public class FirstStep {
         
         System.out.println("\tMoveFilesToFolder method: Checklist:  ");
         
-        // Separate checklist by string
-        String[] documents = student.getChecklist().replaceAll("\\u000b", "::").split("::");
-        
-        // Get all files from student from GoogleDrive
-        //ArrayList<File> studentFiles = this.getService().GetFileByStudentInfo(student.getLastName(), student.getFirstName(), "");
-        ArrayList<File> studentFiles = this.getService().GetFileStudentInfo(student.getLastName(), student.getFirstName(), "");
-        
-        if(studentFiles.isEmpty())
-            for(String documentTitle : documents)
-                    this.putInfo(student, documentTitle, this.documentsMissing);
-        else{
-            // For each string from var documents, do the loop
-            for(String documentTitle : documents){
-                System.out.print(documentTitle + ";");
-                // For each File from var studentFiles, do the loop
-                for(File file : studentFiles){
-                    String title = file.getTitle().replaceAll("_", " ");
+        if(!student.getChecklist().equals("")){
+            // Separate checklist by string
+            String[] documents = student.getChecklist().replaceAll("\\u000b", "::").split("::");
+            // Get all files from student from GoogleDrive
+            //ArrayList<File> studentFiles = this.getService().GetFileByStudentInfo(student.getLastName(), student.getFirstName(), "");
+            ArrayList<File> studentFiles = this.getService().GetFileStudentInfo(student.getLastName(), student.getFirstName(), "");
 
-                    // If the file contains the same title as the checklist, the last name and first name
-                    // add that file to the documentsFound Hashmap, remove that name from var student checklist
-                    // and move the file to the student folder.
-                    if(title.contains(documentTitle))
-                        if(!student.getLastName().equals("") && title.contains(student.getLastName()))
-                            if(!student.getFirstName().equals("") && title.contains(student.getFirstName())){
-                                this.getService().MoveFiles(file, studentFolder);
-                                this.putInfo(student, documentTitle, documentsFound);
-                                student.setChecklist(student.getChecklist().replace(documentTitle, ""));
-                                student.setChecklist(student.getChecklist().replace("::", ""));
-                            }
-                    // Otherwise, just add it to the missing documents Hashmap
-                    else
-                        this.putInfo(student, documentTitle, documentsMissing);
+            if(studentFiles.isEmpty())
+                for(String documentTitle : documents)
+                        this.putInfo(student, documentTitle, this.documentsMissing);
+            else{
+                // For each string from var documents, do the loop
+                for(String documentTitle : documents){
+                    System.out.print(documentTitle + ";");
+                    // For each File from var studentFiles, do the loop
+                    for(File file : studentFiles){
+                        String title = file.getTitle().replaceAll("_", " ");
+
+                        // If the file contains the same title as the checklist, the last name and first name
+                        // add that file to the documentsFound Hashmap, remove that name from var student checklist
+                        // and move the file to the student folder.
+                        if(title.contains(documentTitle))
+                            if(!student.getLastName().equals("") && title.contains(student.getLastName()))
+                                if(!student.getFirstName().equals("") && title.contains(student.getFirstName())){
+                                    this.getService().MoveFiles(file, studentFolder);
+                                    this.putInfo(student, documentTitle, documentsFound);
+                                    student.setChecklist(student.getChecklist().replace(documentTitle, ""));
+                                    student.setChecklist(student.getChecklist().replace("::", ""));
+                                }
+                        // Otherwise, just add it to the missing documents Hashmap
+                        else
+                            this.putInfo(student, documentTitle, documentsMissing);
+                    }
+                    // If I was able to find all the checklist from a user, mark ir as Complete
+                    if(student.getChecklist().equals(""))
+                        student.setChecklist("COMPLETE");
                 }
-                // If I was able to find all the checklist from a user, mark ir as Complete
-                if(student.getChecklist().equals(""))
-                    student.setChecklist("COMPLETE");
             }
+        }
+        else{
+            student.setChecklist("COMPLETE");
         }
     }
     
