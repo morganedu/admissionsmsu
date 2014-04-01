@@ -13,7 +13,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  *
@@ -21,22 +20,27 @@ import java.util.HashMap;
  */
 public class FirstStep {
     private GoogleDrive service;
-    ArrayList<IncompleteStudent> checkedStudents;
-    ArrayList<IncompleteStudent> missingStudents;
-    ArrayList<IncompleteStudent> foundStudents;
-
+    private ArrayList<IncompleteStudent> checkedStudents;
+    /*
+    private ArrayList<IncompleteStudent> mustCheckStudents;
+    private ArrayList<IncompleteStudent> missingStudents;
+    private ArrayList<IncompleteStudent> foundStudents;
+    */
+    
     public FirstStep() {
         this.service = new GoogleDrive();
         this.checkedStudents = new ArrayList<>();
+        /*
         this.missingStudents = new ArrayList<>();
         this.foundStudents = new ArrayList<>();
+        this.mustCheckStudents = new ArrayList<>();
+        */
     }
     
     private void printIncompleteStudent(IncompleteStudent student){
         System.out.println();
         System.out.println("Student: "+student.getLastName() + ", " + student.getFirstName());
         System.out.println("Term: " + student.getType());
-        System.out.println();
     }
 
     private void MoveFilesToFolder(IncompleteStudent student, File studentFolder) throws IOException {
@@ -50,10 +54,13 @@ public class FirstStep {
             
             // Get all files from student from GoogleDrive
             ArrayList<File> studentFiles = this.getService().GetFileStudentInfo(student.getLastName(), student.getFirstName(), "");
-
+            
+            /*
             if (studentFiles.isEmpty()) {
                 this.missingStudents.add(student);
             } else {
+            */
+            if (!studentFiles.isEmpty()) {
                 // For each string from var documents, do the loop
                 for (String documentTitle : documents) {
                     System.out.print(documentTitle + ";");
@@ -77,15 +84,17 @@ public class FirstStep {
                 }
                 if (student.getChecklist().equals("") || student.getChecklist().contains("^*:*$")){
                     student.setChecklist("COMPLETE");
-                    this.foundStudents.add(student);
-                }
+                    //this.foundStudents.add(student);
+                    this.getCheckedStudents().add(student);
+                }/*
                 else{
                     this.missingStudents.add(student);
-                }
+                }*/
             }
         } else {
             student.setChecklist("COMPLETE");
-            this.foundStudents.add(student);
+            //this.foundStudents.add(student);
+            this.getCheckedStudents().add(student);
         }
     }
 
@@ -101,7 +110,7 @@ public class FirstStep {
 
             for (IncompleteStudent student : incompleteStudents) {
 
-                System.out.println("\n\nStudent: " + student.getLastName() + student.getFirstName() + student.getId());
+                this.printIncompleteStudent(student);
 
                 File studentFolder = this.getService().getFolderByStudentInfo(student.getLastName(), student.getFirstName(), student.getId());
 
@@ -118,8 +127,8 @@ public class FirstStep {
                         this.getService().MoveFiles(studentFolder, folderPassed1);
                     }
                 }
-                this.checkedStudents.add(student);
-                System.out.println("Incomplete Students checked: " + this.checkedStudents.size() + " / " + incompleteStudents.size());
+                this.getCheckedStudents().add(student);
+                //System.out.println("Incomplete Students checked: " + this.getCheckedStudents().size() + " / " + this.getMissingStudents().size());
             }
         } catch (IOException ex) {
             System.out.println("Back in executePartOne");
@@ -131,32 +140,51 @@ public class FirstStep {
         System.out.println(this.getService().GetAuthorizationLink());
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         this.service.setCode(br.readLine());
-        
         this.executePartOne(is.getStudents());
     }
-
-    public static void main(String args[]) throws IOException {
-        IncompleteStudents is = new IncompleteStudents();
-        FirstStep fs = new FirstStep();
-        try {
-            is.utility();
-            fs.runScript(is);
-        } catch (Exception ex) {
-            System.out.println(ex.toString() + " " + ex.getMessage() + " " + ex.getLocalizedMessage());
-            try{
-                
-             fs.runScript(is);
-             }catch(Exception e){
-                System.out.println(e.toString() + " " + e.getMessage() + " " + e.getLocalizedMessage());
-             }
-             System.out.println("Back in main");
-        }
+    /*
+    public void generateMustCheckList(){
+        for(IncompleteStudent student : this.getCheckedStudents())
+            this.getMustCheckStudents().remove(student);
     }
-
+    */
+    
     /**
      * @return the service
      */
     public GoogleDrive getService() {
         return service;
+    }
+
+    /**
+     * @return the checkedStudents
+     */
+    public ArrayList<IncompleteStudent> getCheckedStudents() {
+        return checkedStudents;
+    }
+    
+    public static void main(String args[]) throws IOException {
+        IncompleteStudents is = new IncompleteStudents();
+        FirstStep fs = new FirstStep();
+        while(true){
+            try {
+                is.utility();
+                fs.runScript(is);
+                is.generateJSON(is.convertToUsers(fs.getCheckedStudents()),"CheckedStudents");
+
+            } catch (Exception ex) {
+                System.out.println(ex.toString() + " " + ex.getMessage() + " " + ex.getLocalizedMessage());
+                ///*
+                try{
+                    //fs.generateMustCheckList();
+                    //is.generateJSON(is.convertToUsers(fs.getMustCheckStudents()),"mustCheckStudents");
+                    //fs.runScript(is);
+                 }catch(Exception e){
+                    System.out.println(e.toString() + " " + e.getMessage() + " " + e.getLocalizedMessage());
+                 }
+                 System.out.println("Back in main");
+                //*/
+            }
+        }
     }
 }
