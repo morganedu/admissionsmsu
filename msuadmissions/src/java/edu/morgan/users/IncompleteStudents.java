@@ -57,9 +57,10 @@ public class IncompleteStudents {
         }
     }
     
-    public Records convertToUsers(ArrayList<IncompleteStudent> incompleteStudents) throws Exception {
+    public User convertToUsers(ArrayList<IncompleteStudent> incompleteStudents) throws Exception {
         Records records = new Records();
         List<Record> record = new ArrayList<>();
+        User user = new User();
         for(IncompleteStudent student : incompleteStudents){
             Record auxRecord = new Record();
             Row row = new Row();
@@ -73,6 +74,7 @@ public class IncompleteStudents {
             record.add(auxRecord);
         }
         records.setRecord(record);
-        return records;
+        user.setRecords(records);
+        return user;
     }
 }
