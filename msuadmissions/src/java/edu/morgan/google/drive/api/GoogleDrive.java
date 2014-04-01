@@ -180,7 +180,7 @@ public class GoogleDrive {
             return file;
             
         } catch(Exception ex){
-            System.out.println(ex.toString());
+            System.out.println("GetFoldersByUserInformation: "+ex.toString());
             return null;
         }
     }
@@ -191,7 +191,7 @@ public class GoogleDrive {
             
         } catch(Exception ex){
             //ex.printStackTrace();
-            System.out.println(ex.toString());
+            System.out.println("GetAllFiles: " + ex.toString());
             return null;
         }
     }
@@ -237,7 +237,7 @@ public class GoogleDrive {
             
         } catch(Exception ex){
             //ex.printStackTrace();
-            System.out.println(ex.toString());
+            System.out.println("GetFoldersByUserInformation: " + ex.toString());
             return null;
         }
     }
@@ -266,17 +266,13 @@ public class GoogleDrive {
             execution += " and mimeType != 'application/vnd.google-apps.folder'";
             return this.retrieveAllFiles(execution);
         } catch(IOException ex){
-            System.out.println(ex.toString());
+            System.out.println("GetFileByStudentInfo: "+ex.toString());
             return new ArrayList<>();
         }
     }
     
     public ArrayList<File> GetFileStudentInfo(String lastName, String firstName, String fileTitle){
         try{
-            String execution = this.createQueryString("fullText", lastName.replaceAll("'", "\\'"), firstName.replaceAll("'", "\\'"), "", fileTitle.replaceAll("'", "\\'"));
-            execution += " and mimeType != 'application/vnd.google-apps.folder'";
-            //return this.retrieveAllFiles(execution);
-            
             ArrayList<File> files = (ArrayList) retrieveAllFiles("title contains '" + lastName + "' and mimeType != 'application/vnd.google-apps.folder'");
             for (File file : files) {
                 String title = file.getTitle().replaceAll("_", " ");
@@ -285,7 +281,7 @@ public class GoogleDrive {
             }
             return files;
         } catch(IOException ex){
-            System.out.println(ex.toString());
+            System.out.println("GetFileStudentInfo: " + ex.toString());
             return new ArrayList<>();
         }
     }
