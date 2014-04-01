@@ -83,7 +83,7 @@ public class GoogleDrive {
             File body = new File();
             body.setTitle(ownerName.trim());
             body.setMimeType("application/vnd.google-apps.folder");
-            return (File)this.getService().files().insert(body).execute();
+            return (File) this.getService().files().insert(body).execute();
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
@@ -150,144 +150,151 @@ public class GoogleDrive {
     public String GetRedirectURI() {
         return REDIRECT_URI;
     }
-    
-    public File GetFolderOrCreate(String firstName, String lastName, String userID){
-        try{
+
+    public File GetFolderOrCreate(String firstName, String lastName, String userID) {
+        try {
             File folder = this.GetFoldersByUserInformation(firstName, lastName, userID);
-            if(folder == null)
+            if (folder == null) {
                 folder = this.CreateFolder(lastName.replaceAll("'", "\\'"), firstName.replaceAll("'", "\\'"), userID);
+            }
             return folder;
-        } catch(IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
             return null;
         }
     }
-    
-    public File GetFolderOrCreate(String firstName){
+
+    public File GetFolderOrCreate(String firstName) {
         File folder = this.GetFoldersByUserInformation(firstName.replaceAll("'", "\\'"));
-        if(folder == null)
+        if (folder == null) {
             folder = this.CreateFolder(firstName);
+        }
         return folder;
     }
-    
-    public File GetFoldersByUserInformation(String firstName){
-        try{
+
+    public File GetFoldersByUserInformation(String firstName) {
+        try {
             String execution = "";
             execution += "title contains '" + firstName + "' ";
             execution += "and mimeType = 'application/vnd.google-apps.folder'";
-            
+
             File file = this.retrieveAllFiles(execution).get(0);
             return file;
-            
-        } catch(Exception ex){
-            System.out.println("GetFoldersByUserInformation: "+ex.toString());
+
+        } catch (Exception ex) {
+            System.out.println("GetFoldersByUserInformation: " + ex.toString() + ex.toString() + " " + ex.getLocalizedMessage() + " " + ex.getMessage());
             return null;
         }
     }
-    
-    public ArrayList<File> GetAllFiles(){
-        try{
+
+    public ArrayList<File> GetAllFiles() {
+        try {
             return this.retrieveAllFiles("mimeType != 'application/vnd.google-apps.folder'");
-            
-        } catch(Exception ex){
+
+        } catch (Exception ex) {
             //ex.printStackTrace();
-            System.out.println("GetAllFiles: " + ex.toString());
+            System.out.println("GetAllFiles: " + ex.toString() + ex.toString() + " " + ex.getLocalizedMessage() + " " + ex.getMessage());
             return null;
         }
     }
-    
-    private String createQueryString(String operator, String lastName, String firstName, String userID, String documentTitle){
+
+    private String createQueryString(String operator, String lastName, String firstName, String userID, String documentTitle) {
         String execution = "";
-            
-            if(!documentTitle.equals(""))
-                execution += operator + " contains '" + documentTitle + "' ";
-            
-            if(!lastName.equals("")){
-                if(!documentTitle.equals(""))
-                    execution += " and " + operator + " contains '" + lastName + "' ";
-                else
-                    execution += operator + " contains '" + lastName + "' ";
+
+        if (!documentTitle.equals("")) {
+            execution += operator + " contains '" + documentTitle + "' ";
+        }
+
+        if (!lastName.equals("")) {
+            if (!documentTitle.equals("")) {
+                execution += " and " + operator + " contains '" + lastName + "' ";
+            } else {
+                execution += operator + " contains '" + lastName + "' ";
             }
-            
-            if(!firstName.equals("")){
-                if(!lastName.equals(""))
-                    execution += " and "+ operator + " contains '" + firstName + "' ";
-                else
-                    execution += operator + " contains '" + firstName + "' ";
+        }
+
+        if (!firstName.equals("")) {
+            if (!lastName.equals("")) {
+                execution += " and " + operator + " contains '" + firstName + "' ";
+            } else {
+                execution += operator + " contains '" + firstName + "' ";
             }
-            
-            if(!userID.equals("")){
-                if(!lastName.equals("") || !firstName.equals(""))
-                    execution += " and "+ operator +" contains '" + userID + "' ";
-                else
-                    execution += operator + " contains '" + userID + "' ";
+        }
+
+        if (!userID.equals("")) {
+            if (!lastName.equals("") || !firstName.equals("")) {
+                execution += " and " + operator + " contains '" + userID + "' ";
+            } else {
+                execution += operator + " contains '" + userID + "' ";
             }
-            
+        }
+
         return execution;
     }
-    
-    public File GetFoldersByUserInformation(String firstName, String lastName, String userID){
-        try{
+
+    public File GetFoldersByUserInformation(String firstName, String lastName, String userID) {
+        try {
             String execution = this.createQueryString("title", firstName, lastName, userID, "");
-            
+
             execution += "and mimeType = 'application/vnd.google-apps.folder'";
-            
+
             File file = this.retrieveAllFiles(execution).get(0);
             return file;
-            
-        } catch(Exception ex){
+
+        } catch (Exception ex) {
             //ex.printStackTrace();
-            System.out.println("GetFoldersByUserInformation: " + ex.toString());
+            System.out.println("GetFoldersByUserInformation: " + ex.toString() + " " + ex.getLocalizedMessage() + " " + ex.getMessage());
             return null;
         }
     }
-    
-    public ArrayList<File> GetFilesByTitle(String fileTitle){
-        try{
-            return this.retrieveAllFiles("title contains '" + fileTitle + "' and mimeType != 'application/vnd.google-apps.folder'" );
-        } catch(IOException ex){
+
+    public ArrayList<File> GetFilesByTitle(String fileTitle) {
+        try {
+            return this.retrieveAllFiles("title contains '" + fileTitle + "' and mimeType != 'application/vnd.google-apps.folder'");
+        } catch (IOException ex) {
             ex.printStackTrace();
             return null;
         }
     }
-    
-    public File GetFileByTitle(String fileTitle){
-        try{
-            return this.retrieveAllFiles("title contains '" + fileTitle + "' and mimeType != 'application/vnd.google-apps.folder'" ).get(0);
-        } catch(IOException ex){
+
+    public File GetFileByTitle(String fileTitle) {
+        try {
+            return this.retrieveAllFiles("title contains '" + fileTitle + "' and mimeType != 'application/vnd.google-apps.folder'").get(0);
+        } catch (IOException ex) {
             ex.printStackTrace();
             return null;
         }
     }
-    
-    public ArrayList<File> GetFileByStudentInfo(String lastName, String firstName, String fileTitle){
-        try{
+
+    public ArrayList<File> GetFileByStudentInfo(String lastName, String firstName, String fileTitle) {
+        try {
             String execution = this.createQueryString("fullText", lastName.replaceAll("'", "\\'"), firstName.replaceAll("'", "\\'"), "", fileTitle.replaceAll("'", "\\'"));
             execution += " and mimeType != 'application/vnd.google-apps.folder'";
             return this.retrieveAllFiles(execution);
-        } catch(IOException ex){
-            System.out.println("GetFileByStudentInfo: "+ex.toString());
+        } catch (IOException ex) {
+            System.out.println("GetFileByStudentInfo: " + ex.toString() + ex.toString() + " " + ex.getLocalizedMessage() + " " + ex.getMessage());
             return new ArrayList<>();
         }
     }
-    
-    public ArrayList<File> GetFileStudentInfo(String lastName, String firstName, String fileTitle){
-        try{
+
+    public ArrayList<File> GetFileStudentInfo(String lastName, String firstName, String fileTitle) {
+        try {
             ArrayList<File> files = (ArrayList) retrieveAllFiles("title contains '" + lastName + "' and mimeType != 'application/vnd.google-apps.folder'");
             for (File file : files) {
                 String title = file.getTitle().replaceAll("_", " ");
-                if (!firstName.equals("") && !title.contains(firstName) && !title.contains(fileTitle))
+                if (!firstName.equals("") && !title.contains(firstName) && !title.contains(fileTitle)) {
                     files.remove(file);
+                }
             }
             return files;
-        } catch(IOException ex){
-            System.out.println("GetFileStudentInfo: " + ex.toString());
+        } catch (IOException ex) {
+            System.out.println("GetFileStudentInfo: " + ex.toString() + ex.toString() + " " + ex.getLocalizedMessage() + " " + ex.getMessage());
             return new ArrayList<>();
         }
     }
-    
-    public File getFolderByStudentInfo(String lastName, String firstName, String studentID){
-        try{
+
+    public File getFolderByStudentInfo(String lastName, String firstName, String studentID) {
+        try {
             ArrayList<File> files = (ArrayList) retrieveAllFiles("title contains '" + lastName + "' and mimeType = 'application/vnd.google-apps.folder'");
             for (File filed : files) {
                 String title = filed.getTitle().replaceAll("_", " ");
@@ -296,21 +303,21 @@ public class GoogleDrive {
                 }
             }
             return null;
-        } catch(IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
             return null;
         }
     }
-    
-    public ArrayList<File> getAllFolders(){
-        try{
+
+    public ArrayList<File> getAllFolders() {
+        try {
             return this.retrieveAllFiles("mimeType = 'application/vnd.google-apps.folder'");
-        } catch(IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
             return null;
         }
     }
-    
+
     private ArrayList<File> retrieveAllFiles(String queryParameters) throws IOException {
         ArrayList<File> result = new ArrayList<>();
         Drive.Files.List request = this.getService().files().list().setQ(queryParameters);
@@ -349,11 +356,9 @@ public class GoogleDrive {
         /*
          * Test 4 - Title matching
          */
-        
         //System.out.println(this.retrieveAllFiles("mimeType = 'application/vnd.google-apps.folder'"));
         //ArrayList<File> files = this.getAllFoldersLastName("davis", "thomas");
         //System.out.println(files.toString());
-        
     }
 
     public static void main(String args[]) {
@@ -365,7 +370,7 @@ public class GoogleDrive {
             drive.setCode(br.readLine());
             drive.test();
         } catch (Exception ex) {
-            System.out.println(ex.toString());
+            System.out.println(ex.toString() + ex.toString() + " " + ex.getLocalizedMessage() + " " + ex.getMessage());
         }
     }
 
