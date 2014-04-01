@@ -6,7 +6,6 @@
 package edu.morgan.google.test;
 
 import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.ParentReference;
 import edu.morgan.google.drive.api.GoogleDrive;
 import edu.morgan.users.IncompleteStudent;
 import edu.morgan.users.IncompleteStudents;
@@ -21,85 +20,23 @@ import java.util.HashMap;
  * @author pablohpsilva
  */
 public class FirstStep {
-
     private GoogleDrive service;
-    private HashMap<IncompleteStudent, ArrayList<String>> documentsMissing;
-    private HashMap<IncompleteStudent, ArrayList<String>> documentsFound;
-    private HashMap<String, File> studentFoldersJson;
-    private ArrayList<File> allFolders;
-    ArrayList<IncompleteStudent> incompleteStudents;
+    ArrayList<IncompleteStudent> checkedStudents;
+    ArrayList<IncompleteStudent> missingStudents;
+    ArrayList<IncompleteStudent> foundStudents;
 
     public FirstStep() {
         this.service = new GoogleDrive();
-        this.documentsFound = new HashMap<>();
-        this.documentsMissing = new HashMap<>();
+        this.checkedStudents = new ArrayList<>();
+        this.missingStudents = new ArrayList<>();
+        this.foundStudents = new ArrayList<>();
     }
-    /*
-     public void execute(ArrayList<IncompleteStudent> incompleteStudents){
-     try{
-     //Create a folder called PASSED
-     File folderPassed = this.service.CreateFolder("PASSED");
-
-     for(IncompleteStudent student : incompleteStudents){
-     File studentFolder = this.service.GetFolderOrCreate(student.getLastName(), student.getFirstName(), student.getId());
-     ArrayList<File> studentFiles = new ArrayList<>();
-
-     ArrayList<String> docFound = new ArrayList<>();
-     ArrayList<String> docMissing = new ArrayList<>();
-
-     for(String document : student.getChecklist()){
-     File aux = this.service.GetFileByTitle(document);
-     if(aux == null)
-     docMissing.add(document);
-     else{
-     docFound.add(document);
-     this.service.MoveFiles(aux, studentFolder);
-     }
-     }
-     this.documentsFound.put(student.getLastName() + student.getFirstName() + student.getId(), docFound);
-     this.documentsMissing.put(student.getLastName() + student.getFirstName() + student.getId(), docMissing);
-                
-     this.service.MoveFiles(studentFolder, folderPassed);
-     }
-     }catch(IOException ex){
-     ex.printStackTrace();
-     }
-     }
     
-    
-     public void generateHashMapFromFolders(){
-     ArrayList<File> folders = this.service.getAllFolders();
-     for(File file : folders){
-     String key = file.getTitle().replace("_"," ");
-     this.studentFoldersJson.put(key, file);
-     }
-     System.out.println(this.studentFoldersJson.size());
-     }
-    
-    
-     private Object splitOrJoinList(Object list){
-     String lista;
-     if(list.getClass().equals("String")){
-     lista = (String) list;
-     return lista.split("\\u000b");
-     }
-     else{
-     for()
-     }
-     }
-     */
-
-    private void putInfo(IncompleteStudent student, String documentTitle, HashMap<IncompleteStudent, ArrayList<String>> hashmap) {
-        ArrayList<String> list;
-
-        if (hashmap.containsKey(student)) {
-            list = hashmap.get(student);
-        } else {
-            list = new ArrayList<>();
-        }
-
-        list.add(documentTitle);
-        hashmap.put(student, list);
+    private void printIncompleteStudent(IncompleteStudent student){
+        System.out.println();
+        System.out.println("Student: "+student.getLastName() + ", " + student.getFirstName());
+        System.out.println("Term: " + student.getType());
+        System.out.println();
     }
 
     private void MoveFilesToFolder(IncompleteStudent student, File studentFolder) throws IOException {
@@ -108,15 +45,14 @@ public class FirstStep {
 
         if (!student.getChecklist().equals("")) {
             // Separate checklist by string
-            String[] documents = student.getChecklist().replaceAll("\\u000b", "::").split("::");
+            student.setChecklist(student.getChecklist().replaceAll("\\u000b", "::"));
+            String[] documents = student.getChecklist().split("::");
+            
             // Get all files from student from GoogleDrive
-            //ArrayList<File> studentFiles = this.getService().GetFileByStudentInfo(student.getLastName(), student.getFirstName(), "");
             ArrayList<File> studentFiles = this.getService().GetFileStudentInfo(student.getLastName(), student.getFirstName(), "");
 
             if (studentFiles.isEmpty()) {
-                for (String documentTitle : documents) {
-                    this.putInfo(student, documentTitle, this.documentsMissing);
-                }
+                this.missingStudents.add(student);
             } else {
                 // For each string from var documents, do the loop
                 for (String documentTitle : documents) {
@@ -132,24 +68,24 @@ public class FirstStep {
                             if (!student.getLastName().equals("") && title.contains(student.getLastName())) {
                                 if (!student.getFirstName().equals("") && title.contains(student.getFirstName())) {
                                     this.getService().MoveFiles(file, studentFolder);
-                                    this.putInfo(student, documentTitle, documentsFound);
                                     student.setChecklist(student.getChecklist().replace(documentTitle, ""));
                                     student.setChecklist(student.getChecklist().replace("::", ""));
-                                } // Otherwise, just add it to the missing documents Hashmap
-                                else {
-                                    this.putInfo(student, documentTitle, documentsMissing);
                                 }
                             }
                         }
                     }
-                    // If I was able to find all the checklist from a user, mark ir as Complete
-                    if (student.getChecklist().equals("")) {
-                        student.setChecklist("COMPLETE");
-                    }
+                }
+                if (student.getChecklist().equals("") || student.getChecklist().contains("^*:*$")){
+                    student.setChecklist("COMPLETE");
+                    this.foundStudents.add(student);
+                }
+                else{
+                    this.missingStudents.add(student);
                 }
             }
         } else {
             student.setChecklist("COMPLETE");
+            this.foundStudents.add(student);
         }
     }
 
@@ -182,10 +118,9 @@ public class FirstStep {
                         this.getService().MoveFiles(studentFolder, folderPassed1);
                     }
                 }
-                this.incompleteStudents.remove(student);
-                System.out.println("Missing students: " + this.incompleteStudents.size());
+                this.checkedStudents.add(student);
+                System.out.println("Incomplete Students checked: " + this.checkedStudents.size() + " / " + incompleteStudents.size());
             }
-            System.out.println(this.documentsFound.toString());
         } catch (IOException ex) {
             System.out.println("Back in executePartOne");
             ex.printStackTrace();
@@ -196,17 +131,8 @@ public class FirstStep {
         System.out.println(this.getService().GetAuthorizationLink());
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         this.service.setCode(br.readLine());
-
-        ArrayList<IncompleteStudent> aux;
-
-        if (this.incompleteStudents == null || this.incompleteStudents.size() == 0) {
-            this.incompleteStudents = (ArrayList<IncompleteStudent>) is.getStudents().clone();
-            aux = (ArrayList<IncompleteStudent>) is.getStudents().clone();
-        } else {
-            aux = (ArrayList<IncompleteStudent>) this.incompleteStudents.clone();
-        }
-
-        this.executePartOne(aux);
+        
+        this.executePartOne(is.getStudents());
     }
 
     public static void main(String args[]) throws IOException {
