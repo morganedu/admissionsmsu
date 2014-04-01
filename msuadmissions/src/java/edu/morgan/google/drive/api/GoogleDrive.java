@@ -36,8 +36,7 @@ public class GoogleDrive {
     private JsonFactory jsonFactory;
     private GoogleAuthorizationCodeFlow flow;
     private Drive service;
-    private GoogleCredential credential;
-
+    
     //public GoogleDrive(String redirectUri) {
     public GoogleDrive(String codeValidation) {
         //REDIRECT_URI = redirectUri;
@@ -62,7 +61,6 @@ public class GoogleDrive {
                 .setAccessType("offline")
                 .setApprovalPrompt("force").build();
         AUTHORIZATION_URI = this.flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build();
-        
 
     }
 
@@ -71,7 +69,7 @@ public class GoogleDrive {
             CODE_VALIDATION = code;
             GoogleTokenResponse response = this.flow.newTokenRequest(CODE_VALIDATION).setRedirectUri(REDIRECT_URI).execute();
             String accessToken = response.getAccessToken();
-            GoogleCredential credential = new GoogleCredential().setFromTokenResponse(response).setAccessToken(accessToken);
+            GoogleCredential credential = new GoogleCredential().setAccessToken(accessToken);
             this.setService(new Drive.Builder(this.httpTransport, this.jsonFactory, credential).setApplicationName("Admissions GoogleDrive Manager").build());
         } catch (IOException ex) {
             ex.printStackTrace();
