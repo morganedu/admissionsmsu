@@ -44,32 +44,29 @@ public class FirstStep {
         if (!student.getChecklist().equals("")) {
             student.setChecklist(student.getChecklist().replaceAll("\\u000b", "::"));
             String[] documents = student.getChecklist().split("::");
-            ArrayList<File> studentFiles = this.getService().GetFileStudentInfo(student.getLastName(), student.getFirstName(), "");
-            if (!studentFiles.isEmpty()) {
-                for (String documentTitle : documents) {
-                    System.out.print(documentTitle + ";");
-                    for (File file : studentFiles) {
-                        String title = file.getTitle().replaceAll("_", " ");
-                        if (title.contains(documentTitle)) {
-                            if (!student.getLastName().equals("") && title.contains(student.getLastName())) {
-                                if (!student.getFirstName().equals("") && title.contains(student.getFirstName())) {
-                                    this.getService().MoveFiles(file, studentFolder);
-                                    student.setChecklist(student.getChecklist().replace(documentTitle, ""));
-                                    student.setChecklist(student.getChecklist().replace("::", ""));
-                                }
-                            }
-                        }
+            for (String checklist : documents) {
+                checklist = checklist.replaceAll("_", " ");
+                ArrayList<File> studentFile; //= new File();
+                try {
+                    studentFile = this.getService().GetFileStudentInfo(student.getLastName(), student.getFirstName(), checklist);
+                    for (int i = 0; i < studentFile.size(); i++) {
+                        this.getService().MoveFiles(studentFile.get(i), studentFolder);
+                        student.setChecklist(student.getChecklist().replace(checklist, ""));
+                        student.setChecklist(student.getChecklist().replace("::", ""));
                     }
+                } catch (IndexOutOfBoundsException ex) {
+                    System.out.println("File Not Found" + " " + ex.getMessage());
+                    //continue;
                 }
-                if (student.getChecklist().equals("") || student.getChecklist().contains("^*:*$")) {
-                    student.setChecklist("COMPLETE");
-                    this.getCheckedStudents().add(student);
-                }
+
+            }
+            if (student.getChecklist().equals("")) {
+                student.setChecklist("COMPLETE");
             }
         } else {
             student.setChecklist("COMPLETE");
-            this.getCheckedStudents().add(student);
         }
+        this.getCheckedStudents().add(student);
     }
 
     public void executePartOne(ArrayList<IncompleteStudent> incompleteStudents) {
@@ -111,13 +108,12 @@ public class FirstStep {
         System.out.println(this.getService().GetAuthorizationLink());
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         this.service.setCode(br.readLine());
-        
-        if(this.backupStudents == null){
+
+        if (this.backupStudents == null) {
             this.backupStudents = new ArrayList<>();
             this.backupStudents = (ArrayList<IncompleteStudent>) is.getStudents().clone();
             this.executePartOne(is.getStudents());
-        }
-        else{
+        } else {
             ArrayList<IncompleteStudent> aux = new ArrayList<>();
             aux = (ArrayList<IncompleteStudent>) this.backupStudents.clone();
             this.executePartOne(aux);
@@ -150,15 +146,10 @@ public class FirstStep {
             } catch (Exception ex) {
                 System.out.println(ex.toString() + " " + ex.getMessage() + " " + ex.getLocalizedMessage());
                 ///*
-                try {
-                    is.utility();
-                    fs.runScript(is);
-                    is.generateJSON(is.convertToUsers(fs.getCheckedStudents()), "CheckedStudents");
-                } catch (Exception ex1) {
-                    Logger.getLogger(FirstStep.class.getName()).log(Level.SEVERE, null, ex1);
-                }
+
                 return;
-                 //System.out.println("Back in main");
+
+                //System.out.println("Back in main");
                 //*/
             }
         }

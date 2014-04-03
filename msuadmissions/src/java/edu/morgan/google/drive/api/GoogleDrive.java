@@ -36,7 +36,8 @@ public class GoogleDrive {
     private JsonFactory jsonFactory;
     private GoogleAuthorizationCodeFlow flow;
     private Drive service;
-    
+    private GoogleCredential credential;
+
     //public GoogleDrive(String redirectUri) {
     public GoogleDrive(String codeValidation) {
         //REDIRECT_URI = redirectUri;
@@ -69,8 +70,8 @@ public class GoogleDrive {
             CODE_VALIDATION = code;
             GoogleTokenResponse response = this.flow.newTokenRequest(CODE_VALIDATION).setRedirectUri(REDIRECT_URI).execute();
             String accessToken = response.getAccessToken();
-            GoogleCredential credential = new GoogleCredential().setAccessToken(accessToken);
-            this.setService(new Drive.Builder(this.httpTransport, this.jsonFactory, credential).setApplicationName("Admissions GoogleDrive Manager").build());
+            credential = new GoogleCredential().setAccessToken(accessToken);
+            this.setService(new Drive.Builder(this.httpTransport, this.jsonFactory, this.credential).setApplicationName("Admissions GoogleDrive Manager").build());
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -281,13 +282,13 @@ public class GoogleDrive {
 
     public ArrayList<File> GetFileStudentInfo(String lastName, String firstName, String fileTitle) {
         try {
-            ArrayList<File> files = (ArrayList) retrieveAllFiles("title contains '" + lastName + "' and mimeType != 'application/vnd.google-apps.folder'");
-            for (File file : files) {
-                String title = file.getTitle().replaceAll("_", " ");
-                if (!firstName.equals("") && !title.contains(firstName) && !title.contains(fileTitle)) {
-                    files.remove(file);
-                }
-            }
+            ArrayList<File> files = (ArrayList) retrieveAllFiles("fullText contains '" + firstName + " " +lastName + "' and fullText contains '" + fileTitle + "'and mimeType != 'application/vnd.google-apps.folder'");
+            /*for (File file : files) {
+             String title = file.getTitle().replaceAll("_", " ");
+             if (!firstName.equals("") && !title.contains(firstName) && !title.contains(fileTitle)) {
+             files.remove(file);
+             }
+             }*/
             return files;
         } catch (IOException ex) {
             System.out.println("GetFileStudentInfo: " + ex.toString() + ex.toString() + " " + ex.getLocalizedMessage() + " " + ex.getMessage());
