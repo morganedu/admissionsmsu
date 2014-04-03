@@ -37,7 +37,7 @@ public class IncompleteStudents {
     }
 
     public void utility() throws Exception {
-        BufferedReader reader = new BufferedReader(new FileReader("/Users/user/Desktop/BAFASE2.json"));
+        BufferedReader reader = new BufferedReader(new FileReader("/Users/user/Desktop/BAFASE_min-2.json"));
         String line = "";
         String json = "";
         while ((line = reader.readLine()) != null) {
