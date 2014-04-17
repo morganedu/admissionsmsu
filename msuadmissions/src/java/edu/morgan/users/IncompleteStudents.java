@@ -27,6 +27,8 @@ public class IncompleteStudents {
     private Gson gson = new GsonBuilder().create();
     private String jsonObj = "";
     private ArrayList<IncompleteStudent> students = new ArrayList<>();
+    //private final String JSONPATH = "/Users/user/Desktop/BAFASE.json";
+    private final String JSONPATH = "/Users/pablohpsilva/Downloads/incom.min.json";
 
     public ArrayList<IncompleteStudent> getStudents() {
         return students;
@@ -37,7 +39,7 @@ public class IncompleteStudents {
     }
 
     public void utility() throws Exception {
-        BufferedReader reader = new BufferedReader(new FileReader("/Users/user/Desktop/BAFASE_min-2.json"));
+        BufferedReader reader = new BufferedReader(new FileReader(this.JSONPATH));
         String line = "";
         String json = "";
         while ((line = reader.readLine()) != null) {
@@ -50,7 +52,7 @@ public class IncompleteStudents {
             incompleteStudent.setLastName(rec.get(i).getRow().getE() != null ? rec.get(i).getRow().getE() : "");
             incompleteStudent.setFirstName(rec.get(i).getRow().getC() != null ? rec.get(i).getRow().getC() : "");
             incompleteStudent.setId(rec.get(i).getRow().getD() != null ? rec.get(i).getRow().getD() : "");
-            incompleteStudent.setChecklist(rec.get(i).getRow().getA() != null ? rec.get(i).getRow().getA() : "");
+            incompleteStudent.setChecklist(rec.get(i).getRow().getA() != null ? rec.get(i).getRow().getA().toLowerCase() : "");
             incompleteStudent.setDateOfBirth(rec.get(i).getRow().getB() != null ? rec.get(i).getRow().getB() : "");
             incompleteStudent.setTerm(rec.get(i).getRow().getG() != null ? rec.get(i).getRow().getG() : "");
             students.add(incompleteStudent);
@@ -83,7 +85,8 @@ public class IncompleteStudents {
         String json = this.gson.toJson(user);
         try {
 		//write converted json data to a file named "file.json"
-		FileWriter writer = new FileWriter("/Users/user/Desktop/"+ name +".json");
+		//FileWriter writer = new FileWriter("/Users/user/Desktop/"+ name +".json");
+                FileWriter writer = new FileWriter("/Users/pablohpsilva/Desktop/"+ name +".json");
 		writer.write(json);
 		writer.close();
  

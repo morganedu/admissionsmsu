@@ -46,7 +46,7 @@ public class FirstStep {
             String[] documents = student.getChecklist().split("::");
             for (String checklist : documents) {
                 checklist = checklist.replaceAll("_", " ");
-                ArrayList<File> studentFile; //= new File();
+                ArrayList<File> studentFile;
                 try {
                     studentFile = this.getService().GetFileStudentInfo(student.getLastName(), student.getFirstName(), checklist);
                     for (int i = 0; i < studentFile.size(); i++) {
