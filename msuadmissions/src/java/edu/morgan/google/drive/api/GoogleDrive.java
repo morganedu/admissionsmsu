@@ -148,7 +148,7 @@ public class GoogleDrive {
         try {
             File folder = this.GetFoldersByUserInformation(firstName, lastName, userID);
             if (folder == null) {
-                folder = this.CreateFolder(lastName.replaceAll("'", "\\'"), firstName.replaceAll("'", "\\'"), userID);
+                folder = this.CreateFolder(lastName.replaceAll("'", "\'"), firstName.replaceAll("'", "\'"), userID);
             }
             return folder;
         } catch (IOException ex) {
@@ -168,7 +168,7 @@ public class GoogleDrive {
     }
 
     public File GetFolderOrCreate(String firstName) {
-        File folder = this.GetFoldersByUserInformation(firstName.replaceAll("'", "\\'"));
+        File folder = this.GetFoldersByUserInformation(firstName.replaceAll("'", "\'"));
         if (folder == null) {
             folder = this.CreateFolder(firstName);
         }
@@ -286,7 +286,7 @@ public class GoogleDrive {
     
     public File MoveFiles(Object fileFrom, Object fileTo) throws IOException {
         File file, target, copiedFile = new File();
-        if (fileFrom.getClass().equals("String")) {
+        if (fileFrom.getClass().toString().equals("String")) {
             file = this.getService().files().get((String) fileFrom).execute();
             target = this.getService().files().get((String) fileTo).execute();
         } else {
@@ -321,7 +321,7 @@ public class GoogleDrive {
     
     private File makeFolder(String LastName, String FirstName, String ID) throws IOException {
         File body = new File();
-        body.setTitle(LastName.replaceAll("'", "\\'") + "_" + FirstName.replaceAll("'", "\\'") + "_" + ID.replaceAll("'", "\\'") + "_ATO".trim());
+        body.setTitle(LastName.replaceAll("'", "\'") + "_" + FirstName.replaceAll("'", "\'") + "_" + ID.replaceAll("'", "\'") + "_ATO".trim());
         body.setMimeType("application/vnd.google-apps.folder");
         return (File) this.getService().files().insert(body).execute();
     }
@@ -344,7 +344,7 @@ public class GoogleDrive {
         if(args.length != 0)
             for(int index = 0; index < args.length; index++)
                 if(!args[index].equals("")){
-                    args[index] = args[index].replaceAll("'", "\\'");
+                    args[index] = args[index].replaceAll("'", "\'");
                     if(index != 0)
                         execution += " and ";
                     execution += operator + " contains '" + args[index] + "' ";

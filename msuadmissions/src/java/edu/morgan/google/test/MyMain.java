@@ -10,6 +10,7 @@ import com.google.api.services.drive.model.File;
 import edu.morgan.google.drive.api.GoogleDrive;
 import edu.morgan.users.IncompleteStudent;
 import edu.morgan.users.IncompleteStudents;
+import edu.morgan.users.PrettyStudentPrint;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class MyMain {
 
         ArrayList<IncompleteStudent> studentsProcessed = new ArrayList<>();
         IncompleteStudents incompletestudents = new IncompleteStudents();
+        ArrayList<PrettyStudentPrint> prettyPrint = new ArrayList<>();
 
         try {
             System.out.println(gd.GetAuthorizationLink());
@@ -45,6 +47,7 @@ public class MyMain {
             
             int counter = 0;
             for (IncompleteStudent student : incompletestudents.getStudents()) {
+                PrettyStudentPrint psp = new PrettyStudentPrint(student.getLastName() + ", " + student.getFirstName() + " #" + student.getId());
                 
                 // Get or Create Folder
                 File studentFolder = gd.getCreateFolder(googleDriveFolders, student.getLastName(), student.getFirstName(), student.getId());
@@ -63,10 +66,13 @@ public class MyMain {
                             else if (checklistitem.contains("act"))
                                 tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "scores", "act"} );
                             
-                            if(!tempFiles.isEmpty())
+                            if(!tempFiles.isEmpty()){
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "found");
                                 for(File file : tempFiles)
                                     gd.MoveFiles(file, studentFolder);
-                            exec.changeChecklist(studentsProcessed, checklistitem, student);
+                            }
+                            else
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "not");
                         }
                         
                         else if(checklistitem.contains("recommendation")){
@@ -77,10 +83,14 @@ public class MyMain {
                             else if(checklistitem.contains("teacher"))
                                 tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "recommendation", "teacher"} );
                             
-                            if(!tempFiles.isEmpty())
+                            if(!tempFiles.isEmpty()){
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "found");
+                                exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for(File file : tempFiles)
                                     gd.MoveFiles(file, studentFolder);
-                            exec.changeChecklist(studentsProcessed, checklistitem, student);
+                            }
+                            else
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "not");
                         }
                         
                         else if (checklistitem.contains("certificate")) {
@@ -91,82 +101,127 @@ public class MyMain {
                             else if (checklistitem.contains("birth"))
                                 tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "certificate", "birth"} );
                             
-                            if(!tempFiles.isEmpty())
+                            if(!tempFiles.isEmpty()){
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "found");
+                                exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for(File file : tempFiles)
                                     gd.MoveFiles(file, studentFolder);
-                            exec.changeChecklist(studentsProcessed, checklistitem, student);
+                            }
+                            else
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "not");
                         }
                         
                         else if (checklistitem.contains("essay") && checklistitem.contains("personal")) {
                             System.out.println("\t keywords triggered: essay | personal");
                             
                             tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "essay", "personal"} );
-                            if(!tempFiles.isEmpty())
+                            if(!tempFiles.isEmpty()){
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "found");
+                                exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for(File file : tempFiles)
                                     gd.MoveFiles(file, studentFolder);
-                            exec.changeChecklist(studentsProcessed, checklistitem, student);
+                            }
+                            else
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "not");
                         }
                         
                         else if (checklistitem.contains("high") && checklistitem.contains("school") && checklistitem.contains("transcript")) {
                             System.out.println("\t keywords triggered: high | school | transcript");
                             
                             tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "high", "school", "transcript"} );
-                            if(!tempFiles.isEmpty())
+                            if(!tempFiles.isEmpty()){
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "found");
+                                exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for(File file : tempFiles)
-                                    gd.MoveFiles(file, studentFolder);  
-                            exec.changeChecklist(studentsProcessed, checklistitem, student);
+                                    gd.MoveFiles(file, studentFolder); 
+                            }
+                            else
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "not");
                         }
                         
                         else if (checklistitem.contains("official") && checklistitem.contains("exam")) {
                             System.out.println("\t keywords triggered: official | exam");
                             
                             tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "official", "exam", "sssce"} );
-                            if(!tempFiles.isEmpty())
+                            if(!tempFiles.isEmpty()){
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "found");
+                                exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for(File file : tempFiles)
                                     gd.MoveFiles(file, studentFolder);
+                            }
+                            else
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "not");
                             
                             tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "official", "exam", "sce"} );
-                            if(!tempFiles.isEmpty())
+                            if(!tempFiles.isEmpty()){
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "found");
+                                exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for(File file : tempFiles)
                                     gd.MoveFiles(file, studentFolder);
+                            }
+                            else
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "not");
                             
                             tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "official", "exam", "waec"} );
-                            if(!tempFiles.isEmpty())
+                            if(!tempFiles.isEmpty()){
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "found");
+                                exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for(File file : tempFiles)
                                     gd.MoveFiles(file, studentFolder);
+                            }
+                            else
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "not");
                             
                             tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "official", "exam", "cxc"} );
-                            if(!tempFiles.isEmpty())
+                            if(!tempFiles.isEmpty()){
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "found");
+                                exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for(File file : tempFiles)
                                     gd.MoveFiles(file, studentFolder);
+                            }
+                            else
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "not");
                             
                             tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "official", "exam", "gde"} );
-                            if(!tempFiles.isEmpty())
+                            if(!tempFiles.isEmpty()){
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "found");
+                                exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for(File file : tempFiles)
                                     gd.MoveFiles(file, studentFolder);
-                            exec.changeChecklist(studentsProcessed, checklistitem, student);
+                            }
+                            else
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "not");
                         }
                         
                         else if (checklistitem.contains("214") && checklistitem.contains("form")) {
                             System.out.println("\t keywords triggered: 214 | form");
                             
                             tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "214", "form"} );
-                            if(!tempFiles.isEmpty())
+                            if(!tempFiles.isEmpty()){
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "found");
+                                exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for(File file : tempFiles)
                                     gd.MoveFiles(file, studentFolder);
-                            exec.changeChecklist(studentsProcessed, checklistitem, student);
+                            }
+                            else
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "not");
                         }
                         
                         else if (checklistitem.contains("resident") && checklistitem.contains("card")) {
                             System.out.println("\t keywords triggered: resident | card");
                             
                             tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "resident", "card"} );
-                            if(!tempFiles.isEmpty())
+                            if(!tempFiles.isEmpty()){
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "found");
+                                exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for(File file : tempFiles)
                                     gd.MoveFiles(file, studentFolder);
-                            exec.changeChecklist(studentsProcessed, checklistitem, student);
+                            }
+                            else
+                                exec.organizeArray(prettyPrint, psp, checklistitem, "not");
                         }
-                        exec.changeChecklist(studentsProcessed, "", student);
+                        else
+                            exec.organizeArray(prettyPrint, psp, checklistitem, "not");
                     }
 
                 }
@@ -174,6 +229,7 @@ public class MyMain {
 
             // Generate new JSONFile
             incompletestudents.generateJSON(incompletestudents.convertToUsers(studentsProcessed), "BAFASE_new_min");
+            exec.printArray(prettyPrint);
         } catch (Exception ex) {
             Logger.getLogger(MyMain.class.getName()).log(Level.SEVERE, null, ex);
         }
