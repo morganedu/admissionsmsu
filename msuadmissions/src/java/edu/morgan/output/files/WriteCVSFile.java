@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class WriteCVSFile {
     public static void printArray(ArrayList<PrettyStudentPrint> pspArray) throws IOException{
-        String content = "";
+        String content = "Last Name, First Name, Morgan ID, Yes, No \n";
         for(PrettyStudentPrint psp: pspArray)
             content += psp.getStudentInfo() + ", " + psp.getFoundChecklist() + ", " +psp.getNotFoundChecklist() + "\n";
         
@@ -35,5 +35,7 @@ public class WriteCVSFile {
         fop.write(contentInBytes);
         fop.flush();
         fop.close();
+        
+        System.out.println("CVS file saved!");
     }
 }

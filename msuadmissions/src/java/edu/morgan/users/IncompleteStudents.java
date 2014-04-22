@@ -93,6 +93,6 @@ public class IncompleteStudents {
 	} catch (IOException e) {
 		e.printStackTrace();
 	}
-        System.out.println(json);
+        System.out.println("JSON File saved!");
     }
 }
