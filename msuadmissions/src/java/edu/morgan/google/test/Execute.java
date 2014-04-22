@@ -52,25 +52,4 @@ public class Execute {
         }
     }
     
-    public void printArray(ArrayList<PrettyStudentPrint> pspArray) throws IOException{
-        String content = "";
-        for(PrettyStudentPrint psp: pspArray)
-            content += psp.getStudentInfo() + "\n\tFound: " + psp.getFoundChecklist() + "\n\tNot Found: " +psp.getNotFoundChecklist() + "\n\n";
-        
-        File file = new File("/Users/pablohpsilva/Desktop/newfile.txt");
-        FileOutputStream fop = new FileOutputStream(file);
-
-        // if file doesnt exists, then create it
-        if (!file.exists()) {
-                file.createNewFile();
-        }
-
-        // get the content in bytes
-        byte[] contentInBytes = content.getBytes();
-
-        fop.write(contentInBytes);
-        fop.flush();
-        fop.close();
-    }
-    
 }

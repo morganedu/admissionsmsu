@@ -321,7 +321,7 @@ public class GoogleDrive {
     
     private File makeFolder(String LastName, String FirstName, String ID) throws IOException {
         File body = new File();
-        body.setTitle(LastName.replaceAll("'", "\\'") + "_" + FirstName.replaceAll("'", "\\'") + "_" + ID.replaceAll("'", "\\'") + "_ATO".trim());
+        body.setTitle(LastName.replaceAll("'", "\\'") + "_" + FirstName.replaceAll("'", "\\'") + "_" + ID.replaceAll("'", "\\'") + "_AUTO".trim());
         body.setMimeType("application/vnd.google-apps.folder");
         return (File) this.getService().files().insert(body).execute();
     }

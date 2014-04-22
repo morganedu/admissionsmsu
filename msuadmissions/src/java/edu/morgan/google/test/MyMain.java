@@ -8,6 +8,8 @@ package edu.morgan.google.test;
 
 import com.google.api.services.drive.model.File;
 import edu.morgan.google.drive.api.GoogleDrive;
+import edu.morgan.output.files.WriteCVSFile;
+import edu.morgan.output.files.WriteXMLFile;
 import edu.morgan.users.IncompleteStudent;
 import edu.morgan.users.IncompleteStudents;
 import edu.morgan.users.PrettyStudentPrint;
@@ -47,7 +49,7 @@ public class MyMain {
             
             int counter = 0;
             for (IncompleteStudent student : incompletestudents.getStudents()) {
-                PrettyStudentPrint psp = new PrettyStudentPrint(student.getLastName() + ", " + student.getFirstName() + " #" + student.getId());
+                PrettyStudentPrint psp = new PrettyStudentPrint(student.getLastName() + ", " + student.getFirstName() + ", " + student.getId());
                 
                 // Get or Create Folder
                 File studentFolder = gd.getCreateFolder(googleDriveFolders, student.getLastName(), student.getFirstName(), student.getId());
@@ -229,7 +231,8 @@ public class MyMain {
 
             // Generate new JSONFile
             incompletestudents.generateJSON(incompletestudents.convertToUsers(studentsProcessed), "BAFASE_new_min");
-            exec.printArray(prettyPrint);
+            WriteCVSFile.printArray(prettyPrint);
+            WriteXMLFile.printArray(prettyPrint);
         } catch (Exception ex) {
             Logger.getLogger(MyMain.class.getName()).log(Level.SEVERE, null, ex);
         }

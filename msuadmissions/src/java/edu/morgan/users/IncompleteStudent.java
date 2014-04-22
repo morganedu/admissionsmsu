@@ -20,7 +20,7 @@ public class IncompleteStudent {
     private String checklist;
     private String id;
     private String dateOfBirth;
-    private String type = "ATO";
+    private String type = "AUTO";
     /**
      * @return the lastName
      */

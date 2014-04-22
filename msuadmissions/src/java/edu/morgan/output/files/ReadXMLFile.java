@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package edu.morgan.xml.parser;
+package edu.morgan.output.files;
 
 import java.io.File;
 import java.io.IOException;
