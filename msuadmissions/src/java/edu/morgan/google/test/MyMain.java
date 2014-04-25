@@ -53,6 +53,7 @@ public class MyMain {
 
                 // Get or Create Folder
                 File studentFolder = gd.getCreateFolder(googleDriveFolders, student.getLastName(), student.getFirstName(), student.getId());
+                File autoFolder = gd.getCreateFolder(googleDriveFolders,"AUTO");
 
                 System.out.println("Debug purposes: " + student.getLastName() + ", " + student.getFirstName() + " - " + ++counter);
 
@@ -67,7 +68,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "TSTS", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "TSTS");
+                                    gd.MoveFiles(file, studentFolder, student, "TSTS", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("scores")) {
@@ -84,7 +85,7 @@ public class MyMain {
                                     exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                     exec.changeChecklist(studentsProcessed, checklistitem, student);
                                     for (File file : tempFiles) {
-                                        gd.MoveFiles(file, studentFolder, student, codeItem);
+                                        gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                     }
                                 }
                             }
@@ -95,7 +96,7 @@ public class MyMain {
                                     exec.organizeArray(prettyPrint, psp, "TSTS", "found");
                                     exec.changeChecklist(studentsProcessed, checklistitem, student);
                                     for (File file : tempFiles) {
-                                        gd.MoveFiles(file, studentFolder, student, "TSTS");
+                                        gd.MoveFiles(file, studentFolder, student, "TSTS", checklistitem);
                                     }
                                 }
                             }
@@ -111,7 +112,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("fee")) {
@@ -148,7 +149,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("waiver") && checklistitem.contains("application")) {
@@ -157,7 +158,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "APW", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "APW");
+                                    gd.MoveFiles(file, studentFolder, student, "APW", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("detailed") && checklistitem.contains("eval")) {
@@ -172,7 +173,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("recommendation")) {
@@ -187,7 +188,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("certificate")) {
@@ -214,7 +215,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("essay") && checklistitem.contains("personal")) {
@@ -223,7 +224,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "ESSY", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "ESSY");
+                                    gd.MoveFiles(file, studentFolder, student, "ESSY", checklistitem);
                                 }
                             } else {
                                 exec.organizeArray(prettyPrint, psp, checklistitem, "not");
@@ -246,7 +247,7 @@ public class MyMain {
                                 }
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("form")) {
@@ -267,7 +268,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("affidavit") && checklistitem.contains("support")) {
@@ -276,7 +277,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "AOS", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "AOS");
+                                    gd.MoveFiles(file, studentFolder, student, "AOS", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("advanced") && checklistitem.contains("placement") && checklistitem.contains("board")) {
@@ -285,7 +286,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "AP", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "AP");
+                                    gd.MoveFiles(file, studentFolder, student, "AP", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("civilian") && checklistitem.contains("millitary") && checklistitem.contains("person")) {
@@ -294,7 +295,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "BRAC", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "BRAC");
+                                    gd.MoveFiles(file, studentFolder, student, "BRAC", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("art") && checklistitem.contains("portfolio")) {
@@ -303,7 +304,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "ARTP", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "ARTP");
+                                    gd.MoveFiles(file, studentFolder, student, "ARTP", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("maryland")) {
@@ -318,7 +319,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("educational") || checklistitem.contains("educ")) {
@@ -336,7 +337,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("letter")) {
@@ -351,7 +352,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("international")) {
@@ -369,7 +370,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("level")) {
@@ -387,7 +388,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("passport")) {
@@ -402,7 +403,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("report") || checklistitem.contains("repo")) {
@@ -417,7 +418,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("english")) {
@@ -432,7 +433,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("approval")) {
@@ -447,7 +448,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("deferred") && checklistitem.contains("action") && checklistitem.contains("childhood")) {
@@ -456,7 +457,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "DACA", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "DACA");
+                                    gd.MoveFiles(file, studentFolder, student, "DACA", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("employment") && checklistitem.contains("authorizaation")) {
@@ -465,7 +466,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "EAC", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "EAC");
+                                    gd.MoveFiles(file, studentFolder, student, "EAC", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("confirmation") && checklistitem.contains("incentive")) {
@@ -474,7 +475,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "IEG", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "IEG");
+                                    gd.MoveFiles(file, studentFolder, student, "IEG", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("graduate") && checklistitem.contains("diploma") && checklistitem.contains("equivalency")) {
@@ -483,7 +484,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "GED", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("bank") && checklistitem.contains("statement")) {
@@ -492,7 +493,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "BS", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "BS");
+                                    gd.MoveFiles(file, studentFolder, student, "BS", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("cambridge") && checklistitem.contains("proficiency") && checklistitem.contains("test")) {
@@ -501,7 +502,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "CPE", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "CPE");
+                                    gd.MoveFiles(file, studentFolder, student, "CPE", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("i-20") && checklistitem.contains("student") && checklistitem.contains("visa")) {
@@ -510,7 +511,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "F1", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "F1");
+                                    gd.MoveFiles(file, studentFolder, student, "F1", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("dream") && checklistitem.contains("act")) {
@@ -519,7 +520,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "I797", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("national") && checklistitem.contains("external") && checklistitem.contains("diploma")) {
@@ -528,7 +529,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "NEDP", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "NEDP");
+                                    gd.MoveFiles(file, studentFolder, student, "NEDP", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("paternal") && checklistitem.contains("consent")) {
@@ -537,7 +538,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "PAC", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "PAC");
+                                    gd.MoveFiles(file, studentFolder, student, "PAC", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("midyear") || checklistitem.contains("mid year") || checklistitem.contains("mid-year")  && checklistitem.contains("grade")) {
@@ -546,7 +547,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "MIDY", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "MIDY");
+                                    gd.MoveFiles(file, studentFolder, student, "MIDY", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("military") && checklistitem.contains("orders")) {
@@ -555,7 +556,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "MO", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "MO");
+                                    gd.MoveFiles(file, studentFolder, student, "MO", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("court") && checklistitem.contains("order")) {
@@ -564,7 +565,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "COOR", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "COOR");
+                                    gd.MoveFiles(file, studentFolder, student, "COOR", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("resume")) {
@@ -573,7 +574,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "RESU", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "RESU");
+                                    gd.MoveFiles(file, studentFolder, student, "RESU", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("residence") && checklistitem.contains("verification")) {
@@ -582,7 +583,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "RSV", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "RSV");
+                                    gd.MoveFiles(file, studentFolder, student, "RSV", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("world") && checklistitem.contains("education") || checklistitem.contains("educ")) {
@@ -591,7 +592,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "WES1", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "WES1");
+                                    gd.MoveFiles(file, studentFolder, student, "WES1", checklistitem);
                                 }
                             }
                         } //
@@ -601,7 +602,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "TOEFL", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "TOEFL");
+                                    gd.MoveFiles(file, studentFolder, student, "TOEFL", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("tax") && checklistitem.contains("return") && checklistitem.contains("personal")) {
@@ -610,7 +611,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "TAXP", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "TAXP");
+                                    gd.MoveFiles(file, studentFolder, student, "TAXP", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("test") && checklistitem.contains("spoken") && checklistitem.contains("english")) {
@@ -619,7 +620,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "TSE", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "TSE");
+                                    gd.MoveFiles(file, studentFolder, student, "TSE", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("social") && checklistitem.contains("security")) {
@@ -628,7 +629,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "SS", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "SS");
+                                    gd.MoveFiles(file, studentFolder, student, "SS", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("tax") && checklistitem.contains("return") && checklistitem.contains("personal")) {
@@ -637,7 +638,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "TAXP", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "TAXP");
+                                    gd.MoveFiles(file, studentFolder, student, "TAXP", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("i-551") && checklistitem.contains("permanent") || checklistitem.contains("perm") && checklistitem.contains("residence")) {
@@ -646,7 +647,7 @@ public class MyMain {
                                 exec.organizeArray(prettyPrint, psp, "PRC", "found");
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, "PRC");
+                                    gd.MoveFiles(file, studentFolder, student, "PRC", checklistitem);
                                 }
                             }
                         } else if (checklistitem.contains("official") && checklistitem.contains("exam")) {
@@ -656,7 +657,7 @@ public class MyMain {
                                 codeItem = "OFEX";
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
 
@@ -665,7 +666,7 @@ public class MyMain {
                                 codeItem = "OFEX";
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
 
@@ -674,7 +675,7 @@ public class MyMain {
                                 codeItem = "OFEX";
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
 
@@ -683,7 +684,7 @@ public class MyMain {
                                 codeItem = "OFEX";
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
 
@@ -692,7 +693,7 @@ public class MyMain {
                                 codeItem = "OFEX";
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
                                 for (File file : tempFiles) {
-                                    gd.MoveFiles(file, studentFolder, student, codeItem);
+                                    gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
 
@@ -703,6 +704,7 @@ public class MyMain {
                     }
 
                 }
+                gd.MoveFiles(studentFolder, autoFolder);
             }
 
             // Generate new JSONFile

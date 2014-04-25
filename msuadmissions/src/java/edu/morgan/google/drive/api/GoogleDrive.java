@@ -115,6 +115,13 @@ public class GoogleDrive {
             folder = this.makeFolder(lastName, firstName, studentID);
         return folder;
     }
+    
+    public File getCreateFolder(ArrayList<File> folders, String folderName) throws IOException{
+        File folder = this.getStudentFolder(folders, folderName, "", "");
+        if(folder == null)
+            folder = this.makeFolder(folderName, "", "");
+        return folder;
+    }
 
     public ArrayList<File> getAllFolders() throws IOException {
         return this.retrieveAllFiles("mimeType = 'application/vnd.google-apps.folder'");
@@ -141,7 +148,7 @@ public class GoogleDrive {
         return null;
     }
     
-    public File MoveFiles(Object fileFrom, Object fileTo, IncompleteStudent student, String codeItem) throws IOException {
+    public File MoveFiles(Object fileFrom, Object fileTo, IncompleteStudent student, String codeItem, String checklist) throws IOException {
         File file, target, copiedFile = new File();
         if (fileFrom.getClass().toString().equals("String")) {
             file = this.getService().files().get((String) fileFrom).execute();
@@ -151,7 +158,7 @@ public class GoogleDrive {
             target = this.getService().files().get(((File) fileTo).getId()).execute();
         }
         
-        copiedFile.setTitle(this.createFileName(student, codeItem) + file.getTitle() + "_AUTO");
+        copiedFile.setTitle(this.createFileName(student, codeItem, checklist) + "_AUTO");
 
         ParentReference newParent = new ParentReference();
         newParent.setSelfLink(target.getSelfLink());
@@ -169,7 +176,26 @@ public class GoogleDrive {
         return (File) this.getService().files().copy(file.getId(), copiedFile).execute();
     }
     
-    public String createFileName(IncompleteStudent student, String codeItem){
+    public File MoveFiles(Object fileFrom, Object fileTo) throws IOException {
+        File file, target = new File();
+        file = this.getService().files().get(((File) fileFrom).getId()).execute();
+        target = this.getService().files().get(((File) fileTo).getId()).execute();
+
+        ParentReference newParent = new ParentReference();
+        newParent.setSelfLink(target.getSelfLink());
+        newParent.setParentLink(target.getParents().get(0).getSelfLink());
+        newParent.setId(target.getId());
+        newParent.setKind(target.getKind());
+        newParent.setIsRoot(false);
+
+        ArrayList<ParentReference> parentsList = new ArrayList<>();
+        parentsList.add(newParent);
+        file.setParents(parentsList);
+
+        return (File) this.getService().files().update(file.getId(), file).execute();
+    }
+    
+    public String createFileName(IncompleteStudent student, String codeItem, String checklist){
         String term, retorno = "";
         if(student.getTerm().toLowerCase().contains("fall")){
             if(student.getTerm().split(" ").length == 2)
@@ -194,9 +220,9 @@ public class GoogleDrive {
         }
         
         if(!student.getId().equals(""))
-            retorno = student.getLastName() + "_" + student.getFirstName() + "_" + student.getId() + "_" + term + "_" + codeItem + "_";
+            retorno = student.getLastName() + "_" + student.getFirstName() + "_" + student.getId() + "_" + term + "_" + codeItem + "_" + checklist + "_";
         else
-            retorno = student.getLastName() + "_" + student.getFirstName() + "_" + term + "_" + codeItem + "_";
+            retorno = student.getLastName() + "_" + student.getFirstName() + "_" + term + "_" + codeItem + "_" + checklist + "_";
         
         return retorno;
     }
