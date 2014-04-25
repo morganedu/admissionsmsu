@@ -35,6 +35,7 @@ public class Execute {
     }
     
     public void organizeArray(ArrayList<PrettyStudentPrint> pspArray, PrettyStudentPrint psp, String dataChanged, String token){
+        /*
         if(pspArray.contains(psp)){
             if(token.equals("found"))
                 if(!pspArray.get(pspArray.indexOf(psp)).getFoundChecklist().contains(dataChanged))
@@ -49,6 +50,16 @@ public class Execute {
                 psp.setNotFoundChecklist(dataChanged);
             pspArray.add(psp);
         }
+        */
+        if(pspArray.contains(psp)){
+            if(!pspArray.get(pspArray.indexOf(psp)).getFoundChecklist().contains(dataChanged))
+                pspArray.get(pspArray.indexOf(psp)).setFoundChecklist(dataChanged);
+        }
+        else{
+            psp.setFoundChecklist(dataChanged);
+            pspArray.add(psp);
+        }
+        
     }
     
     public void getFiles(String checklist, IncompleteStudent student){

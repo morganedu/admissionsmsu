@@ -17,12 +17,15 @@ import java.util.ArrayList;
  * @author pablohpsilva
  */
 public class WriteCSVFile {
+    private final static String CSVFILE = "/Users/pablohpsilva/Desktop/outputFile.csv";
+    //private final String CSVFILE = "/Users/BABATUNDE/outputFile.csv";
+    
     public static void printArray(ArrayList<PrettyStudentPrint> pspArray) throws IOException{
         String content = "Last Name, First Name, Morgan ID, Yes, No \n";
         for(PrettyStudentPrint psp: pspArray)
             content += psp.getStudentInfo() + ", " + psp.getFoundChecklist() + "\n";
         
-        File file = new File("/Users/pablohpsilva/Desktop/outputFile.csv");
+        File file = new File(CSVFILE);
         FileOutputStream fop = new FileOutputStream(file);
 
         // if file doesnt exists, then create it
