@@ -12,6 +12,8 @@ import edu.morgan.studentUser.Records;
 import edu.morgan.studentUser.Row;
 import edu.morgan.studentUser.User;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -84,11 +86,17 @@ public class IncompleteStudents {
     public void generateJSON(User user, String name){
         String json = this.gson.toJson(user);
         try {
-		//write converted json data to a file named "file.json"
-		//FileWriter writer = new FileWriter("/Users/user/Desktop/"+ name +".json");
-                FileWriter writer = new FileWriter("/Users/pablohpsilva/Desktop/"+ name +".json");
-		writer.write(json);
-		writer.close();
+            //write converted json data to a file named "file.json"
+            //FileWriter writer = new FileWriter("/Users/user/Desktop/"+ name +".json");
+            // if file doesnt exists, then create it
+            File file = new File("/Users/pablohpsilva/Desktop/"+ name +".json");
+            
+            if (!file.exists())
+                file.createNewFile();
+            
+            FileWriter writer = new FileWriter("/Users/pablohpsilva/Desktop/"+ name +".json");
+            writer.write(json);
+            writer.close();
  
 	} catch (IOException e) {
 		e.printStackTrace();
