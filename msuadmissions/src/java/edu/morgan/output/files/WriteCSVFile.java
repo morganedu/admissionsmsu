@@ -16,11 +16,12 @@ import java.util.ArrayList;
  *
  * @author pablohpsilva
  */
-public class WriteCVSFile {
+public class WriteCSVFile {
     public static void printArray(ArrayList<PrettyStudentPrint> pspArray) throws IOException{
         String content = "Last Name, First Name, Morgan ID, Yes, No \n";
         for(PrettyStudentPrint psp: pspArray)
-            content += psp.getStudentInfo() + ", " + psp.getFoundChecklist() + ", " +psp.getNotFoundChecklist() + "\n";
+            //content += psp.getStudentInfo() + ", " + psp.getFoundChecklist() + ", " +psp.getNotFoundChecklist() + "\n";
+            content += psp.getStudentInfo() + ", " + psp.getNotFoundChecklist() + "\n";
         
         File file = new File("/Users/pablohpsilva/Desktop/outputFile.csv");
         FileOutputStream fop = new FileOutputStream(file);

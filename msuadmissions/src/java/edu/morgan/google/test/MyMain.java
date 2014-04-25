@@ -8,7 +8,7 @@ package edu.morgan.google.test;
 
 import com.google.api.services.drive.model.File;
 import edu.morgan.google.drive.api.GoogleDrive;
-import edu.morgan.output.files.WriteCVSFile;
+import edu.morgan.output.files.WriteCSVFile;
 import edu.morgan.output.files.WriteXMLFile;
 import edu.morgan.users.IncompleteStudent;
 import edu.morgan.users.IncompleteStudents;
@@ -47,6 +47,10 @@ public class MyMain {
             
             incompletestudents.utility();
             
+            for (IncompleteStudent student : incompletestudents.getStudents()) {
+                System.out.println(student.getChecklist().trim());
+            }
+            
             int counter = 0;
             for (IncompleteStudent student : incompletestudents.getStudents()) {
                 PrettyStudentPrint psp = new PrettyStudentPrint(student.getLastName() + ", " + student.getFirstName() + ", " + student.getId());
@@ -59,31 +63,87 @@ public class MyMain {
                 if (!student.getChecklist().equals("")) {
                     for(String checklistitem : student.getChecklist().split("::")){
                         ArrayList<File> tempFiles = new ArrayList<>();
+                        String codeItem = "";
                         
                         if (checklistitem.contains("scores")){
-                            System.out.println("\t keywords triggered: scores | sat | act");
-                            
                             if(checklistitem.contains("sat") ){
-                                tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "scores", "sat"} );
+                                if(checklistitem.contains("tswe")){
+                                    tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "scores", "sat", "tswe"} );
+                                    codeItem = "S05";
+                                }
+                                else{
+                                    tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "scores", "sat"} );
+                                    codeItem = "SAT";
+                                }
+                                
                                 if(!tempFiles.isEmpty()){
-                                    exec.organizeArray(prettyPrint, psp, checklistitem, "found");
+                                    exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                     exec.changeChecklist(studentsProcessed, checklistitem, student);
                                     for(File file : tempFiles)
                                         gd.MoveFiles(file, studentFolder);
                                 }
-                                else
-                                    exec.organizeArray(prettyPrint, psp, checklistitem, "not");
-                                
-                            } else if (checklistitem.contains("act")){
+                            }
+                            
+                            if (checklistitem.contains("act")){
                                 tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "scores", "act"} );
                                 if(!tempFiles.isEmpty()){
-                                    exec.organizeArray(prettyPrint, psp, checklistitem, "found");
+                                    exec.organizeArray(prettyPrint, psp, "TSTS", "found");
                                     exec.changeChecklist(studentsProcessed, checklistitem, student);
                                     for(File file : tempFiles)
                                         gd.MoveFiles(file, studentFolder);
                                 }
-                                else
-                                    exec.organizeArray(prettyPrint, psp, checklistitem, "not");
+                            }
+                        }
+                        else if(checklistitem.contains("sat")){
+                            if(checklistitem.contains("verbal")){
+                                tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "sat", "verbal"} );
+                                codeItem = "S01";
+                            }
+                            else if(checklistitem.contains("math")){
+                                tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "sat", "math"} );
+                                codeItem = "S02";
+                            }
+                            if(!tempFiles.isEmpty()){
+                                exec.organizeArray(prettyPrint, psp, codeItem, "found");
+                                exec.changeChecklist(studentsProcessed, checklistitem, student);
+                                for(File file : tempFiles)
+                                    gd.MoveFiles(file, studentFolder);
+                            }
+                        }
+                        
+                        /*
+                        "fee", "open", "house", "waiver"
+                        */
+                        
+                        else if(checklistitem.contains("fee")){
+                            if(checklistitem.contains("confirmation")){
+                                if(checklistitem.contains("112.50")){
+                                    tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "sat", "verbal"} );
+                                    codeItem = "IE11";
+                                } else if(checklistitem.contains("37.50")){
+                                    tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "sat", "verbal"} );
+                                    codeItem = "IE37";
+                                } else if(checklistitem.contains("75.00")){
+                                    tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "sat", "verbal"} );
+                                    codeItem = "IE75";
+                                } else if(checklistitem.contains("waiver")){
+                                    tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "sat", "verbal"} );
+                                    codeItem = "IEW";
+                                } else if(checklistitem.contains("nexus")){
+                                    tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "sat", "verbal"} );
+                                    codeItem = "IEX";
+                                }
+                            } else if(checklistitem.contains("waiver")){
+                                if(checklistitem.contains("house") && checklistitem.contains("open")){
+                                tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "sat", "verbal"} );
+                                codeItem = "APO";
+                                } else if(checklistitem.contains("half")){
+                                tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "sat", "verbal"} );
+                                codeItem = "APH";
+                                }
+                            } else if(checklistitem.contains("application") && checklistitem.contains("35")){
+                                tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "sat", "verbal"} );
+                                codeItem = "AP25";
                             }
                         }
                         
@@ -92,24 +152,17 @@ public class MyMain {
                             
                             if(checklistitem.contains("counselor")){
                                 tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "recommendation", "counselor"} );
-                                if(!tempFiles.isEmpty()){
-                                    exec.organizeArray(prettyPrint, psp, checklistitem, "found");
-                                    exec.changeChecklist(studentsProcessed, checklistitem, student);
-                                    for(File file : tempFiles)
-                                        gd.MoveFiles(file, studentFolder);
-                                }
-                                else
-                                    exec.organizeArray(prettyPrint, psp, checklistitem, "not");
-                            } else if(checklistitem.contains("teacher")){
+                                codeItem = "LRE2";
+                            }
+                            else if(checklistitem.contains("teacher")){
                                 tempFiles = gd.getStudentFiles(new String[] {student.getLastName(), student.getFirstName(), student.getId(), "recommendation", "teacher"} );
-                                if(!tempFiles.isEmpty()){
-                                    exec.organizeArray(prettyPrint, psp, checklistitem, "found");
-                                    exec.changeChecklist(studentsProcessed, checklistitem, student);
-                                    for(File file : tempFiles)
-                                        gd.MoveFiles(file, studentFolder);
-                                }
-                                else
-                                    exec.organizeArray(prettyPrint, psp, checklistitem, "not");
+                                codeItem = "LRE1";
+                            }
+                            if(!tempFiles.isEmpty()){
+                                exec.organizeArray(prettyPrint, psp, codeItem, "found");
+                                exec.changeChecklist(studentsProcessed, checklistitem, student);
+                                for(File file : tempFiles)
+                                    gd.MoveFiles(file, studentFolder);
                             }
                         }
                         
@@ -258,7 +311,7 @@ public class MyMain {
 
             // Generate new JSONFile
             incompletestudents.generateJSON(incompletestudents.convertToUsers(studentsProcessed), "BAFASE_new_min");
-            WriteCVSFile.printArray(prettyPrint);
+            WriteCSVFile.printArray(prettyPrint);
             WriteXMLFile.printArray(prettyPrint);
         } catch (Exception ex) {
             Logger.getLogger(MyMain.class.getName()).log(Level.SEVERE, null, ex);

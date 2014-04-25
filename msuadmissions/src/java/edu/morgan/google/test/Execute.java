@@ -1,11 +1,8 @@
 package edu.morgan.google.test;
 
 
-import edu.morgan.google.drive.api.GoogleDrive;
 import edu.morgan.users.IncompleteStudent;
 import edu.morgan.users.PrettyStudentPrint;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -40,7 +37,8 @@ public class Execute {
     public void organizeArray(ArrayList<PrettyStudentPrint> pspArray, PrettyStudentPrint psp, String dataChanged, String token){
         if(pspArray.contains(psp)){
             if(token.equals("found"))
-                pspArray.get(pspArray.indexOf(psp)).setFoundChecklist(dataChanged);
+                if(!pspArray.get(pspArray.indexOf(psp)).getFoundChecklist().contains(dataChanged))
+                    pspArray.get(pspArray.indexOf(psp)).setFoundChecklist(dataChanged);
             else
                 pspArray.get(pspArray.indexOf(psp)).setNotFoundChecklist(dataChanged);
         }
@@ -51,6 +49,10 @@ public class Execute {
                 psp.setNotFoundChecklist(dataChanged);
             pspArray.add(psp);
         }
+    }
+    
+    public void getFiles(String checklist, IncompleteStudent student){
+        
     }
     
 }
