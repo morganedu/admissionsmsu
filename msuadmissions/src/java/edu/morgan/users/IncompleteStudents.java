@@ -28,7 +28,7 @@ public class IncompleteStudents {
     private String jsonObj = "";
     private ArrayList<IncompleteStudent> students = new ArrayList<>();
     //private final String JSONPATH = "/Users/user/Desktop/BAFASE.json";
-    private final String JSONPATH = "/Users/pablohpsilva/Downloads/incom.json";
+    private final String JSONPATH = "/Users/pablohpsilva/Downloads/incom.min.json";
 
     public ArrayList<IncompleteStudent> getStudents() {
         return students;

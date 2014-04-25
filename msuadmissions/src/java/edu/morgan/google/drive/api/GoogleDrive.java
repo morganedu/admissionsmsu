@@ -16,6 +16,7 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.ParentReference;
+import edu.morgan.users.IncompleteStudent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -140,7 +141,7 @@ public class GoogleDrive {
         return null;
     }
     
-    public File MoveFiles(Object fileFrom, Object fileTo) throws IOException {
+    public File MoveFiles(Object fileFrom, Object fileTo, IncompleteStudent student, String codeItem) throws IOException {
         File file, target, copiedFile = new File();
         if (fileFrom.getClass().toString().equals("String")) {
             file = this.getService().files().get((String) fileFrom).execute();
@@ -150,8 +151,7 @@ public class GoogleDrive {
             target = this.getService().files().get(((File) fileTo).getId()).execute();
         }
         
-        copiedFile.setTitle(file.getTitle());
-        //copiedFile = (File) this.getService().files().copy(file.getId(), copiedFile).execute();
+        copiedFile.setTitle(this.createFileName(student, codeItem) + file.getTitle() + "_AUTO");
 
         ParentReference newParent = new ParentReference();
         newParent.setSelfLink(target.getSelfLink());
@@ -167,6 +167,38 @@ public class GoogleDrive {
 
         //return (File) this.getService().files().update(file.getId(), file).execute();
         return (File) this.getService().files().copy(file.getId(), copiedFile).execute();
+    }
+    
+    public String createFileName(IncompleteStudent student, String codeItem){
+        String term, retorno = "";
+        if(student.getTerm().toLowerCase().contains("fall")){
+            if(student.getTerm().split(" ").length == 2)
+                term = "FA" + student.getTerm().split(" ")[1];
+            else
+                term = "FA";
+        } else if(student.getTerm().toLowerCase().contains("summer")){
+            if(student.getTerm().split(" ").length == 2)
+                term = "SU" + student.getTerm().split(" ")[1];
+            else
+                term = "SU";
+        } else if(student.getTerm().toLowerCase().contains("spring")){
+            if(student.getTerm().split(" ").length == 2)
+                term = "SP" + student.getTerm().split(" ")[1];
+            else
+                term = "SP";
+        } else{
+            if(student.getTerm().split(" ").length == 2)
+                term = "WN" + student.getTerm().split(" ")[1];
+            else
+                term = "WN";
+        }
+        
+        if(!student.getId().equals(""))
+            retorno = student.getLastName() + "_" + student.getFirstName() + "_" + student.getId() + "_" + term + "_" + codeItem + "_";
+        else
+            retorno = student.getLastName() + "_" + student.getFirstName() + "_" + term + "_" + codeItem + "_";
+        
+        return retorno;
     }
     
     /*

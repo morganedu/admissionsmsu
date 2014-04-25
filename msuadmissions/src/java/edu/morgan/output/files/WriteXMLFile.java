@@ -47,11 +47,11 @@ public class WriteXMLFile {
                 Element foundlist = doc.createElement("FoundList");
 		foundlist.appendChild(doc.createTextNode(psp.getFoundChecklist()));
 		row.appendChild(foundlist);
-                
+                /*
                 Element notfoundlist = doc.createElement("NotFoundList");
 		notfoundlist.appendChild(doc.createTextNode(psp.getNotFoundChecklist()));
 		row.appendChild(notfoundlist);
-                
+                */
                 record.appendChild(row);
             }
             
