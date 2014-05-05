@@ -118,19 +118,16 @@ public class UploadFileServlet extends HttpServlet {
                     String contentType = fi.getContentType();
                     boolean isInMemory = fi.isInMemory();
                     long sizeInBytes = fi.getSize();
+                    
                     // Write the file
-                    if (fileName.lastIndexOf("\\") >= 0) {
-                        file = new File(filePath + fileName.substring(fileName.lastIndexOf("\\")));
-                    } else {
-                        file = new File(filePath + fileName.substring(fileName.lastIndexOf("\\") + 1));
-                    }
+                    file = new File(filePath + "upload.xml");
                     fi.write(file);
                     out.println("Uploaded Filename: " + fileName + "<br>");
                 }
             }
             out.println("</body>");
             out.println("</html>");
-            response.sendRedirect("https://accounts.google.com/o/oauth2/auth?access_type=offline&approval_prompt=force&client_id=892186241167-228o9c5afo7fqrnbciabv81eghdj63f5.apps.googleusercontent.com&redirect_uri=http://localhost:8084/msuadmissions/AppServlet&response_type=code&scope=https://www.googleapis.com/auth/drive%20https://www.googleapis.com/auth/drive.appdata%20https://www.googleapis.com/auth/drive.apps.readonly%20https://www.googleapis.com/auth/drive.file%20https://www.googleapis.com/auth/drive.metadata.readonly");
+            response.sendRedirect("https://accounts.google.com/o/oauth2/auth?access_type=offline&approval_prompt=force&client_id=892186241167-228o9c5afo7fqrnbciabv81eghdj63f5.apps.googleusercontent.com&redirect_uri=http://localhost:8084/msuadmissions/MiddleServlet&response_type=code&scope=https://www.googleapis.com/auth/drive%20https://www.googleapis.com/auth/drive.appdata%20https://www.googleapis.com/auth/drive.apps.readonly%20https://www.googleapis.com/auth/drive.file%20https://www.googleapis.com/auth/drive.metadata.readonly");
         } catch (Exception ex) {
             System.out.println(ex);
         }

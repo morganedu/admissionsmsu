@@ -47,16 +47,18 @@ public class WelcomeServlet extends HttpServlet {
             out.println("   <h1 align='center'>Redirecting to Google authorization.</h1>\n");
             out.println("   <h4 align='center'>Do NOT use Internet Explorer. Use Google Chrome or Firefox instead.</h4>\n");
             
+            out.println("   <h4>");
             out.println("   <form class='form-horizontal' role='form' action='UploadFileServlet' method='post' enctype='multipart/form-data'>\n");
             out.println("       <div class='form-group'>");
-            out.println(            "Select File to Upload:<input type='file' name='file'>");
+            out.println(            "<br/>Select File to Upload: <br/> <br/>");
+            out.println("           <input type='file'  name='file'>");
             out.println(            "<br>\n");
             out.println("           <div class='col-sm-10'>");
-            out.println("               <input type='submit' value='Submit'/>");
-            //out.println("               <button type='submit' class='btn btn-default' value='Upload'>Submit</button>");
+            out.println("               <input type='submit' class=\"btn btn-primary\" value='Submit'/>");
             out.println("           </div>");
-            out.println(    "</form>");
+            out.println("   </form>");
             
+            out.println("   </h4>");
             out.println("</div>");
             out.println("</body>");
             out.println("</html>");

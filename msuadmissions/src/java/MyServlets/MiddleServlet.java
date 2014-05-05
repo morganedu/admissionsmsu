@@ -6,7 +6,6 @@
 
 package MyServlets;
 
-import edu.morgan.google.test.MyMain;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -19,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author pablohpsilva
  */
-@WebServlet(name = "AppServlet", urlPatterns = {"/AppServlet"})
-public class AppServlet extends HttpServlet {
+@WebServlet(name = "MiddleServlet", urlPatterns = {"/MiddleServlet"})
+public class MiddleServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,7 +30,6 @@ public class AppServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -46,14 +44,14 @@ public class AppServlet extends HttpServlet {
             out.println("<body style='background-color:#eee;'>");
             out.println("<div class='container' style='width:800px;'>");
             out.println("<h2 align=\"center\">List of processed students. <br/> Please, do NOT close this page.</h2>");
-            out.println("<h3>Completed:</h3>");
             out.println("<ul class=\"list-unstyled\">");
-            MyMain main = new MyMain();
-            main.Start(request.getParameter("code"), out);
+            out.println("<li> ... List is being processed ... Wait for a while. </li>");
             out.println("</ul>");
             out.println("</div>");
             out.println("</body>");
             out.println("</html>");
+            response.setHeader("Refresh", "3; AppServlet?code=" + request.getParameter("code"));
+            //response.sendRedirect("AppServlet?code=" + request.getParameter("code"));
         }
     }
 
