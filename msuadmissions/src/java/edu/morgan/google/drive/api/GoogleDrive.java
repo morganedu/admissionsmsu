@@ -25,7 +25,7 @@ public class GoogleDrive {
 
     private static final String CLIENT_ID = "892186241167-228o9c5afo7fqrnbciabv81eghdj63f5.apps.googleusercontent.com";
     private static final String CLIENT_SECRET = "BVuUu5FU8boxFTgkSMtpJwDK";
-    private static String REDIRECT_URI = "http://localhost:8084/msuadmissions/XML2GoogleDrive/index.jsp";
+    private static String REDIRECT_URI = "http://localhost:8084/msuadmissions/MiddleServlet";
     private static String CODE_VALIDATION;
     private static String AUTHORIZATION_URI;
 
@@ -110,16 +110,16 @@ public class GoogleDrive {
     */
     
     public File getCreateFolder(ArrayList<File> folders, String lastName, String firstName, String studentID) throws IOException{
-        File folder = this.getStudentFolder(folders, lastName, firstName, studentID);
-        if(folder == null)
-            folder = this.makeFolder(lastName, firstName, studentID);
+        //File folder = this.getStudentFolder(folders, lastName, firstName, studentID);
+        //if(folder == null)
+        File folder = this.makeFolder(lastName, firstName, studentID);
         return folder;
     }
     
     public File getCreateFolder(ArrayList<File> folders, String folderName) throws IOException{
-        File folder = this.getStudentFolder(folders, folderName, "", "");
-        if(folder == null)
-            folder = this.makeFolder(folderName, "", "");
+        //File folder = this.getStudentFolder(folders, folderName, "", "");
+        //if(folder == null)
+        File folder = this.makeFolder(folderName, "", "");
         return folder;
     }
 
@@ -158,7 +158,7 @@ public class GoogleDrive {
             target = this.getService().files().get(((File) fileTo).getId()).execute();
         }
         
-        copiedFile.setTitle(this.createFileName(student, codeItem, checklist) + "_AUTO");
+        copiedFile.setTitle(this.createFileName(student, codeItem, checklist) + "AUTO");
 
         ParentReference newParent = new ParentReference();
         newParent.setSelfLink(target.getSelfLink());
@@ -235,7 +235,10 @@ public class GoogleDrive {
     
     private File makeFolder(String LastName, String FirstName, String ID) throws IOException {
         File body = new File();
-        body.setTitle(LastName.replaceAll("'", "\\'") + "_" + FirstName.replaceAll("'", "\\'") + "_" + ID.replaceAll("'", "\\'") + "_AUTO".trim());
+        if(LastName.equals("AUTO"))
+            body.setTitle(LastName);
+        else
+            body.setTitle(LastName.replaceAll("'", "\\'") + "_" + FirstName.replaceAll("'", "\\'") + "_" + ID.replaceAll("'", "\\'") + "_AUTO".trim());
         body.setMimeType("application/vnd.google-apps.folder");
         return (File) this.getService().files().insert(body).execute();
     }

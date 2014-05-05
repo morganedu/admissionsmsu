@@ -29,7 +29,6 @@ public class IncompleteStudents {
     private Gson gson = new GsonBuilder().create();
     private String jsonObj = "";
     private ArrayList<IncompleteStudent> students = new ArrayList<>();
-    //private final String JSONPATH = "/Users/user/Desktop/BAFASE.json";
     private final String JSONPATH = "/Users/pablohpsilva/Downloads/incom.min.json";
 
     public ArrayList<IncompleteStudent> getStudents() {

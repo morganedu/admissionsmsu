@@ -14,6 +14,7 @@ import edu.morgan.users.IncompleteStudents;
 import edu.morgan.users.PrettyStudentPrint;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,10 +28,8 @@ public class MyMain {
     public int test(String args[]) {
         return args.length;
     }
-
-    @SuppressWarnings("empty-statement")
-    public static void main(String args[]) {
-
+    
+    public void Start(String code, PrintWriter out){
         GoogleDrive gd = new GoogleDrive();
         Execute exec = new Execute();
 
@@ -39,23 +38,27 @@ public class MyMain {
         ArrayList<PrettyStudentPrint> prettyPrint = new ArrayList<>();
 
         try {
+            /*
             System.out.println(gd.GetAuthorizationLink());
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             gd.setCode(br.readLine());
+            */
+            gd.setCode(code);
 
             ArrayList<File> googleDriveFolders = gd.getAllFolders();
 
             incompletestudents.utility();
 
             int counter = 0;
+            File autoFolder = gd.getCreateFolder(googleDriveFolders,"AUTO");
+            
             for (IncompleteStudent student : incompletestudents.getStudents()) {
                 PrettyStudentPrint psp = new PrettyStudentPrint(student.getLastName() + ", " + student.getFirstName() + ", " + student.getId());
 
                 // Get or Create Folder
                 File studentFolder = gd.getCreateFolder(googleDriveFolders, student.getLastName(), student.getFirstName(), student.getId());
-                File autoFolder = gd.getCreateFolder(googleDriveFolders,"AUTO");
 
-                System.out.println("Debug purposes: " + student.getLastName() + ", " + student.getFirstName() + " - " + ++counter);
+                out.println("<li>" + student.getLastName() + ", " + student.getFirstName() + " - " + ++counter + "</li>");
 
                 if (!student.getChecklist().equals("")) {
                     for (String checklistitem : student.getChecklist().split("::")) {
@@ -71,7 +74,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "TSTS", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("scores")) {
+                        }
+                        if (checklistitem.contains("scores")) {
                             if (checklistitem.contains("sat")) {
                                 if (checklistitem.contains("tswe")) {
                                     tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "scores", "sat", "tswe"});
@@ -100,7 +104,8 @@ public class MyMain {
                                     }
                                 }
                             }
-                        } else if (checklistitem.contains("sat")) {
+                        }
+                        if (checklistitem.contains("sat")) {
                             if (checklistitem.contains("verbal")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "sat", "verbal"});
                                 codeItem = "S01";
@@ -115,7 +120,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("fee")) {
+                        }
+                        if (checklistitem.contains("fee")) {
                             if (checklistitem.contains("confirmation")) {
                                 if (checklistitem.contains("112.50")) {
                                     tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "fee", "confirmation", "112.50"});
@@ -152,7 +158,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("waiver") && checklistitem.contains("application")) {
+                        }
+                        if (checklistitem.contains("waiver") && checklistitem.contains("application")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "waiver", "application"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "APW", "found");
@@ -161,7 +168,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "APW", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("detailed") && checklistitem.contains("eval")) {
+                        }
+                        if (checklistitem.contains("detailed") && checklistitem.contains("eval")) {
                             if (checklistitem.contains("ece")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "detailed", "eval", "ece"});
                                 codeItem = "AUD2";
@@ -176,7 +184,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("recommendation")) {
+                        }
+                        if (checklistitem.contains("recommendation")) {
                             if (checklistitem.contains("counselor")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "recommendation", "counselor"});
                                 codeItem = "LRE2";
@@ -191,7 +200,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("certificate")) {
+                        }
+                        if (checklistitem.contains("certificate")) {
                             if (checklistitem.contains("secondary") && checklistitem.contains("school")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "certificate", "secondary", "school"});
                                 codeItem = "SSC";
@@ -218,7 +228,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("essay") && checklistitem.contains("personal")) {
+                        }
+                        if (checklistitem.contains("essay") && checklistitem.contains("personal")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "essay", "personal"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "ESSY", "found");
@@ -229,20 +240,24 @@ public class MyMain {
                             } else {
                                 exec.organizeArray(prettyPrint, psp, checklistitem, "not");
                             }
-                        } else if (checklistitem.contains("transcript")) {
+                        }
+                        if (checklistitem.contains("transcript")) {
                             codeItem = "";
                             if (checklistitem.contains("high") && checklistitem.contains("school")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "high", "school", "transcript"});
+                                codeItem = "HST";
                             } else if (checklistitem.contains("official") && checklistitem.contains("college")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "official", "college", "transcript"});
+                                codeItem = "CLT";
                             } else if (checklistitem.contains("unofficial")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "unofficial", "transcript"});
+                                codeItem = "UNO";
                             } else if (checklistitem.contains("evaluation")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "evaluation", "transcript"});
                                 codeItem = "TRNE";
                             }
                             if (!tempFiles.isEmpty()) {
-                                if (!codeItem.equals("")) {
+                                if (codeItem.equals("TRNE")) {
                                     exec.organizeArray(prettyPrint, psp, codeItem, "found");
                                 }
                                 exec.changeChecklist(studentsProcessed, checklistitem, student);
@@ -250,7 +265,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("form")) {
+                        }
+                        if (checklistitem.contains("form")) {
                             if (checklistitem.contains("dd") && checklistitem.contains("214")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "dd", "214", "form"});
                                 codeItem = "D214";
@@ -271,7 +287,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("affidavit") && checklistitem.contains("support")) {
+                        }
+                        if (checklistitem.contains("affidavit") && checklistitem.contains("support")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "affidavit", "support"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "AOS", "found");
@@ -280,7 +297,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "AOS", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("advanced") && checklistitem.contains("placement") && checklistitem.contains("board")) {
+                        }
+                        if (checklistitem.contains("advanced") && checklistitem.contains("placement") && checklistitem.contains("board")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "advanced", "affidavit", "support"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "AP", "found");
@@ -289,7 +307,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "AP", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("civilian") && checklistitem.contains("millitary") && checklistitem.contains("person")) {
+                        }
+                        if (checklistitem.contains("civilian") && checklistitem.contains("millitary") && checklistitem.contains("person")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "civilian", "millitary", "person"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "BRAC", "found");
@@ -298,7 +317,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "BRAC", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("art") && checklistitem.contains("portfolio")) {
+                        }
+                        if (checklistitem.contains("art") && checklistitem.contains("portfolio")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "art", "portfolio"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "ARTP", "found");
@@ -307,7 +327,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "ARTP", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("maryland")) {
+                        }
+                        if (checklistitem.contains("maryland")) {
                             if (checklistitem.contains("tax") && checklistitem.contains("return")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "maryland", "tax", "return"});
                                 codeItem = "COMT";
@@ -322,7 +343,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("educational") || checklistitem.contains("educ")) {
+                        }
+                        if (checklistitem.contains("educational") || checklistitem.contains("educ")) {
                             if (checklistitem.contains("individual") && checklistitem.contains("plan")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "educational", "tax", "return"});
                                 codeItem = "IEP";
@@ -340,7 +362,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("letter")) {
+                        }
+                        if (checklistitem.contains("letter")) {
                             if (checklistitem.contains("human") && checklistitem.contains("resources")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "letter", "human", "resources"});
                                 codeItem = "MDHR";
@@ -355,7 +378,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("international")) {
+                        }
+                        if (checklistitem.contains("international")) {
                             if (checklistitem.contains("student") && checklistitem.contains("application") || checklistitem.contains("app")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "international", "student", "application"});
                                 codeItem = "ISA";
@@ -373,7 +397,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("level")) {
+                        }
+                        if (checklistitem.contains("level")) {
                             if (checklistitem.contains("gca") && checklistitem.contains("advance")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "level", "gca", "advance"});
                                 codeItem = "GCEA";
@@ -391,7 +416,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("passport")) {
+                        }
+                        if (checklistitem.contains("passport")) {
                             if (checklistitem.contains("non")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "non", "passport"});
                                 codeItem = "PASS";
@@ -406,7 +432,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("report") || checklistitem.contains("repo")) {
+                        }
+                        if (checklistitem.contains("report") || checklistitem.contains("repo")) {
                             if (checklistitem.contains("grade") && checklistitem.contains("card")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "report", "grade"});
                                 codeItem = "GRR";
@@ -421,7 +448,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("english")) {
+                        }
+                        if (checklistitem.contains("english")) {
                             if (checklistitem.contains("translation") && checklistitem.contains("records")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "english", "translation", "records"});
                                 codeItem = "ETR";
@@ -436,7 +464,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("approval")) {
+                        }
+                        if (checklistitem.contains("approval")) {
                             if (checklistitem.contains("department")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "approval", "department"});
                                 codeItem = "DEPA";
@@ -451,7 +480,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("deferred") && checklistitem.contains("action") && checklistitem.contains("childhood")) {
+                        }
+                        if (checklistitem.contains("deferred") && checklistitem.contains("action") && checklistitem.contains("childhood")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "deferred", "action", "childhood"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "DACA", "found");
@@ -460,7 +490,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "DACA", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("employment") && checklistitem.contains("authorizaation")) {
+                        }
+                        if (checklistitem.contains("employment") && checklistitem.contains("authorizaation")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "employment", "authorization"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "EAC", "found");
@@ -469,7 +500,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "EAC", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("confirmation") && checklistitem.contains("incentive")) {
+                        }
+                        if (checklistitem.contains("confirmation") && checklistitem.contains("incentive")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "confirmation", "incentive"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "IEG", "found");
@@ -478,7 +510,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "IEG", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("graduate") && checklistitem.contains("diploma") && checklistitem.contains("equivalency")) {
+                        }
+                        if (checklistitem.contains("graduate") && checklistitem.contains("diploma") && checklistitem.contains("equivalency")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "graduate", "diploma", "equivalency"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "GED", "found");
@@ -487,7 +520,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("bank") && checklistitem.contains("statement")) {
+                        }
+                        if (checklistitem.contains("bank") && checklistitem.contains("statement")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "bank", "statement"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "BS", "found");
@@ -496,7 +530,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "BS", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("cambridge") && checklistitem.contains("proficiency") && checklistitem.contains("test")) {
+                        }
+                        if (checklistitem.contains("cambridge") && checklistitem.contains("proficiency") && checklistitem.contains("test")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "cambridge", "proficiency", "test"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "CPE", "found");
@@ -505,7 +540,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "CPE", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("i-20") && checklistitem.contains("student") && checklistitem.contains("visa")) {
+                        }
+                        if (checklistitem.contains("i-20") && checklistitem.contains("student") && checklistitem.contains("visa")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "i-20", "student", "visa"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "F1", "found");
@@ -514,7 +550,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "F1", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("dream") && checklistitem.contains("act")) {
+                        }
+                        if (checklistitem.contains("dream") && checklistitem.contains("act")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "dream", "act"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "I797", "found");
@@ -523,7 +560,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, codeItem, checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("national") && checklistitem.contains("external") && checklistitem.contains("diploma")) {
+                        }
+                        if (checklistitem.contains("national") && checklistitem.contains("external") && checklistitem.contains("diploma")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "national", "external", "diploma"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "NEDP", "found");
@@ -532,7 +570,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "NEDP", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("paternal") && checklistitem.contains("consent")) {
+                        }
+                        if (checklistitem.contains("paternal") && checklistitem.contains("consent")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "consent", "paternal"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "PAC", "found");
@@ -541,7 +580,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "PAC", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("midyear") || checklistitem.contains("mid year") || checklistitem.contains("mid-year")  && checklistitem.contains("grade")) {
+                        }
+                        if (checklistitem.contains("midyear") || checklistitem.contains("mid year") || checklistitem.contains("mid-year")  && checklistitem.contains("grade")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "grade", "mid-year"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "MIDY", "found");
@@ -550,7 +590,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "MIDY", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("military") && checklistitem.contains("orders")) {
+                        }
+                        if (checklistitem.contains("military") && checklistitem.contains("orders")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "military", "orders"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "MO", "found");
@@ -559,7 +600,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "MO", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("court") && checklistitem.contains("order")) {
+                        }
+                        if (checklistitem.contains("court") && checklistitem.contains("order")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "court", "order"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "COOR", "found");
@@ -568,7 +610,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "COOR", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("resume")) {
+                        }
+                        if (checklistitem.contains("resume")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "resume"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "RESU", "found");
@@ -577,7 +620,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "RESU", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("residence") && checklistitem.contains("verification")) {
+                        }
+                        if (checklistitem.contains("residence") && checklistitem.contains("verification")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "residence", "verification"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "RSV", "found");
@@ -586,7 +630,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "RSV", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("world") && checklistitem.contains("education") || checklistitem.contains("educ")) {
+                        }
+                        if (checklistitem.contains("world") && checklistitem.contains("education") || checklistitem.contains("educ")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "world", "education"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "WES1", "found");
@@ -596,7 +641,7 @@ public class MyMain {
                                 }
                             }
                         } //
-                        else if (checklistitem.contains("toefl")) {
+                        if (checklistitem.contains("toefl")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "toefl"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "TOEFL", "found");
@@ -605,7 +650,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "TOEFL", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("tax") && checklistitem.contains("return") && checklistitem.contains("personal")) {
+                        }
+                        if (checklistitem.contains("tax") && checklistitem.contains("return") && checklistitem.contains("personal")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "tax", "return", "personal"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "TAXP", "found");
@@ -614,7 +660,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "TAXP", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("test") && checklistitem.contains("spoken") && checklistitem.contains("english")) {
+                        }
+                        if (checklistitem.contains("test") && checklistitem.contains("spoken") && checklistitem.contains("english")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "test", "spoken", "english"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "TSE", "found");
@@ -623,7 +670,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "TSE", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("social") && checklistitem.contains("security")) {
+                        }
+                        if (checklistitem.contains("social") && checklistitem.contains("security")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "security", "social"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "SS", "found");
@@ -632,7 +680,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "SS", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("tax") && checklistitem.contains("return") && checklistitem.contains("personal")) {
+                        }
+                        if (checklistitem.contains("tax") && checklistitem.contains("return") && checklistitem.contains("personal")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "tax", "return", "personal"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "TAXP", "found");
@@ -641,7 +690,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "TAXP", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("i-551") && checklistitem.contains("permanent") || checklistitem.contains("perm") && checklistitem.contains("residence")) {
+                        }
+                        if (checklistitem.contains("i-551") && checklistitem.contains("permanent") || checklistitem.contains("perm") && checklistitem.contains("residence")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "residence", "permanent", "i-551"});
                             if (!tempFiles.isEmpty()) {
                                 exec.organizeArray(prettyPrint, psp, "PRC", "found");
@@ -650,7 +700,8 @@ public class MyMain {
                                     gd.MoveFiles(file, studentFolder, student, "PRC", checklistitem);
                                 }
                             }
-                        } else if (checklistitem.contains("official") && checklistitem.contains("exam")) {
+                        }
+                        if (checklistitem.contains("official") && checklistitem.contains("exam")) {
                             tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "official", "exam", "sssce"});
                             codeItem = "";
                             if (!tempFiles.isEmpty()) {
@@ -711,8 +762,15 @@ public class MyMain {
             incompletestudents.generateJSON(incompletestudents.convertToUsers(studentsProcessed), "BAFASE_new_min");
             WriteCSVFile.printArray(prettyPrint);
             WriteXMLFile.printArray(prettyPrint);
+            out.println("<li><h3>All students processed. Total of students: " + counter + "</h3></li>");
         } catch (Exception ex) {
             Logger.getLogger(MyMain.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @SuppressWarnings("empty-statement")
+    public static void main(String args[]) {
+        //MyMain main = new MyMain();
+        //main.Start(String code);
     }
 }
