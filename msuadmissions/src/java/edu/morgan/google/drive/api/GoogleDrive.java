@@ -158,7 +158,10 @@ public class GoogleDrive {
             target = this.getService().files().get(((File) fileTo).getId()).execute();
         }
         
-        copiedFile.setTitle(this.createFileName(student, codeItem, checklist) + "AUTO");
+        if(checklist.contains("transcript"))
+            copiedFile.setTitle("Transcript_AUTO");
+        else
+            copiedFile.setTitle(this.createFileName(student, codeItem, checklist) + "AUTO");
 
         ParentReference newParent = new ParentReference();
         newParent.setSelfLink(target.getSelfLink());

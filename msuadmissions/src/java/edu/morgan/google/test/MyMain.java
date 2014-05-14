@@ -13,6 +13,7 @@ import edu.morgan.users.IncompleteStudent;
 import edu.morgan.users.IncompleteStudents;
 import edu.morgan.users.PrettyStudentPrint;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class MyMain {
         return args.length;
     }
     
-    public void Start(String code, PrintWriter out){
+    public void Start(String code){
         GoogleDrive gd = new GoogleDrive();
         Execute exec = new Execute();
 
@@ -58,7 +59,7 @@ public class MyMain {
                 // Get or Create Folder
                 File studentFolder = gd.getCreateFolder(googleDriveFolders, student.getLastName(), student.getFirstName(), student.getId());
 
-                out.println("<li>" + student.getLastName() + ", " + student.getFirstName() + " - " + ++counter + "</li>");
+                //out.println("<li>" + student.getLastName() + ", " + student.getFirstName() + " - " + ++counter + "</li>");
 
                 if (!student.getChecklist().equals("")) {
                     for (String checklistitem : student.getChecklist().split("::")) {
@@ -245,15 +246,19 @@ public class MyMain {
                             codeItem = "";
                             if (checklistitem.contains("high") && checklistitem.contains("school")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "high", "school", "transcript"});
+                                //tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "high", "school"});
                                 codeItem = "HST";
                             } else if (checklistitem.contains("official") && checklistitem.contains("college")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "official", "college", "transcript"});
+                                //tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "official", "college"});
                                 codeItem = "CLT";
                             } else if (checklistitem.contains("unofficial")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "unofficial", "transcript"});
+                                //tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "unofficial"});
                                 codeItem = "UNO";
                             } else if (checklistitem.contains("evaluation")) {
                                 tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "evaluation", "transcript"});
+                                //tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "evaluation"});
                                 codeItem = "TRNE";
                             }
                             if (!tempFiles.isEmpty()) {
@@ -762,7 +767,7 @@ public class MyMain {
             incompletestudents.generateJSON(incompletestudents.convertToUsers(studentsProcessed), "BAFASE_new_min");
             WriteCSVFile.printArray(prettyPrint);
             WriteXMLFile.printArray(prettyPrint);
-            out.println("<li><h3>All students processed. Total of students: " + counter + "</h3></li>");
+            //out.println("<li><h3>All students processed. Total of students: " + counter + "</h3></li>");
         } catch (Exception ex) {
             Logger.getLogger(MyMain.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -770,7 +775,19 @@ public class MyMain {
 
     @SuppressWarnings("empty-statement")
     public static void main(String args[]) {
-        //MyMain main = new MyMain();
-        //main.Start(String code);
+        ///*
+        try {
+            MyMain m = new MyMain();
+            GoogleDrive gd = new GoogleDrive();
+            System.out.println(gd.GetAuthorizationLink());
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            //gd.setCode(br.readLine());
+            
+            m.Start(br.readLine());
+            
+        } catch (IOException ex) {
+            Logger.getLogger(MyMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //*/
     }
 }
