@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  
 public class WriteXMLFile {
     
-    private final static String XMLFILE = "/Users/pablohpsilva/Desktop/outputFile.xml";
+    private final static String XMLFILE = "/Users/user/Desktop/outputFile1.xml";
     //private final static String XMLFILE = "/Users/BABATUNDE/outputFile.xml";
  
     public static void printArray(ArrayList<PrettyStudentPrint> pspArray) throws ParserConfigurationException, TransformerConfigurationException, TransformerException{

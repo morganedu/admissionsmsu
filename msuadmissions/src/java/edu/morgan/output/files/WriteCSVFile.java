@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * @author pablohpsilva
  */
 public class WriteCSVFile {
-    private final static String CSVFILE = "/Users/pablohpsilva/Desktop/outputFile.csv";
+    private final static String CSVFILE = "/Users/user/Desktop/outputFile1.csv";
     //private final String CSVFILE = "/Users/BABATUNDE/outputFile.csv";
     
     public static void printArray(ArrayList<PrettyStudentPrint> pspArray) throws IOException{
