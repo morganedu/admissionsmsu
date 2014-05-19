@@ -17,11 +17,11 @@ import java.util.ArrayList;
  * @author pablohpsilva
  */
 public class WriteCSVFile {
-    private final static String CSVFILE = "/Users/user/Desktop/outputFile1.csv";
-    //private final String CSVFILE = "/Users/BABATUNDE/outputFile.csv";
+    private final static String CSVFILE = "/Users/pablohpsilva/Desktop/target/outputFile1.csv";
+    //private final String CSVFILE = "/Users/user/Desktop/outputFile1.csv";
     
     public static void printArray(ArrayList<PrettyStudentPrint> pspArray) throws IOException{
-        String content = "Last Name, First Name, Morgan ID, Yes, No \n";
+        String content = "Last Name, First Name, Morgan ID, Yes\n";
         for(PrettyStudentPrint psp: pspArray)
             content += psp.getStudentInfo() + ", " + psp.getFoundChecklist() + "\n";
         

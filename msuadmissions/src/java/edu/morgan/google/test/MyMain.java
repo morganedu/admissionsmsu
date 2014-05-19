@@ -233,18 +233,6 @@ public class MyMain {
                                     }
                                 }
                             }
-                            if (checklistitem.contains("essay") && checklistitem.contains("personal")) {
-                                tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "essay", "personal"});
-                                if (!tempFiles.isEmpty()) {
-                                    exec.organizeArray(prettyPrint, psp, "ESSY", "found");
-                                    exec.changeChecklist(studentsProcessed, checklistitem, student);
-                                    for (File file : tempFiles) {
-                                        gd.MoveFiles(file, studentFolder, student, "ESSY", checklistitem);
-                                    }
-                                } else {
-                                    exec.organizeArray(prettyPrint, psp, checklistitem, "not");
-                                }
-                            }
                             if (checklistitem.contains("transcript")) {
                                 codeItem = "";
                                 if (checklistitem.contains("high") && checklistitem.contains("school")) {
@@ -303,6 +291,16 @@ public class MyMain {
                                     exec.changeChecklist(studentsProcessed, checklistitem, student);
                                     for (File file : tempFiles) {
                                         gd.MoveFiles(file, studentFolder, student, "AOS", checklistitem);
+                                    }
+                                }
+                            }
+                            if (checklistitem.contains("essay") && checklistitem.contains("personal")) {
+                                tempFiles = gd.getStudentFiles(new String[]{student.getLastName(), student.getFirstName(), student.getId(), "essay", "personal"});
+                                if (!tempFiles.isEmpty()) {
+                                    exec.organizeArray(prettyPrint, psp, "ESSY", "found");
+                                    exec.changeChecklist(studentsProcessed, checklistitem, student);
+                                    for (File file : tempFiles) {
+                                        gd.MoveFiles(file, studentFolder, student, "ESSY", checklistitem);
                                     }
                                 }
                             }

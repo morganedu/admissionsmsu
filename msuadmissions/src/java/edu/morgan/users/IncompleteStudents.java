@@ -29,7 +29,9 @@ public class IncompleteStudents {
     private Gson gson = new GsonBuilder().create();
     private String jsonObj = "";
     private ArrayList<IncompleteStudent> students = new ArrayList<>();
-    private final String JSONPATH = "/Users/user/Desktop/TheFiles/json/incomplete1.json";
+    //private final String JSONPATH = "/Users/user/Desktop/TheFiles/json/incomplete1.json";
+    private final String JSONPATH = "/Users/pablohpsilva/Downloads/incomplete1.json";
+    private final String JSONEXIT = "/Users/pablohpsilva/Desktop/target/1";
 
     public ArrayList<IncompleteStudent> getStudents() {
         return students;
@@ -88,12 +90,12 @@ public class IncompleteStudents {
             //write converted json data to a file named "file.json"
             //FileWriter writer = new FileWriter("/Users/user/Desktop/"+ name +".json");
             // if file doesnt exists, then create it
-            File file = new File("/Users/user/Desktop/"+ name +".json");
+            File file = new File(JSONEXIT + name +".json");
             
             if (!file.exists())
                 file.createNewFile();
             
-            FileWriter writer = new FileWriter("/Users/user/Desktop/"+ name +".json");
+            FileWriter writer = new FileWriter(JSONEXIT + name +".json");
             writer.write(json);
             writer.close();
  
