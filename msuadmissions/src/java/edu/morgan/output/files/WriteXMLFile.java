@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  
 public class WriteXMLFile {
     
-    private final static String XMLFILE = "/Users/pablohpsilva/Desktop/target/outputFile1.xml";
+    private final static String XMLFILE = "/Users/pablohpsilva/Desktop/target/outputFile1.1.xml";
     //private final static String XMLFILE = "/Users/users/Desktop/outputFile.xml";
  
     public static void printArray(ArrayList<PrettyStudentPrint> pspArray) throws ParserConfigurationException, TransformerConfigurationException, TransformerException{
@@ -47,7 +47,9 @@ public class WriteXMLFile {
             row.appendChild(lastname);
 
             Element foundlist = doc.createElement("FoundList");
-            foundlist.appendChild(doc.createTextNode(psp.getFoundChecklist()));
+            
+            //foundlist.appendChild(doc.createTextNode(psp.getFoundChecklist()));
+            
             row.appendChild(foundlist);
             /*
             Element notfoundlist = doc.createElement("NotFoundList");

@@ -34,23 +34,8 @@ public class Execute {
             studentsList.get(studentsList.indexOf(student)).setChecklist(aux);
     }
     
-    public void organizeArray(ArrayList<PrettyStudentPrint> pspArray, PrettyStudentPrint psp, String dataChanged, String token){
+    public void organizeArray(ArrayList<PrettyStudentPrint> pspArray, PrettyStudentPrint psp, String dataChanged, String token){        
         /*
-        if(pspArray.contains(psp)){
-            if(token.equals("found"))
-                if(!pspArray.get(pspArray.indexOf(psp)).getFoundChecklist().contains(dataChanged))
-                    pspArray.get(pspArray.indexOf(psp)).setFoundChecklist(dataChanged);
-            else
-                pspArray.get(pspArray.indexOf(psp)).setNotFoundChecklist(dataChanged);
-        }
-        else{
-            if(token.equals("found"))
-                psp.setFoundChecklist(dataChanged);
-            else
-                psp.setNotFoundChecklist(dataChanged);
-            pspArray.add(psp);
-        }
-        */
         if(pspArray.contains(psp)){
             if(!pspArray.get(pspArray.indexOf(psp)).getFoundChecklist().contains(dataChanged))
                 pspArray.get(pspArray.indexOf(psp)).setFoundChecklist(dataChanged);
@@ -59,7 +44,7 @@ public class Execute {
             psp.setFoundChecklist(dataChanged);
             pspArray.add(psp);
         }
-        
+        */
     }
     
     public void getFiles(String checklist, IncompleteStudent student){

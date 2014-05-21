@@ -17,14 +17,35 @@ import java.util.ArrayList;
  * @author pablohpsilva
  */
 public class WriteCSVFile {
-    private final static String CSVFILE = "/Users/pablohpsilva/Desktop/target/outputFile1.csv";
+    private final static String CSVFILE = "/Users/pablohpsilva/Desktop/target/outputFile8.8.csv";
     //private final String CSVFILE = "/Users/user/Desktop/outputFile1.csv";
     
     public static void printArray(ArrayList<PrettyStudentPrint> pspArray) throws IOException{
-        String content = "Last Name, First Name, Morgan ID, Yes\n";
+        String content = 
+                "Last Name, First Name, Morgan ID, TSTS, S05, SAT, S01, S02, IE11, IE37, IE75, " + 
+                "IEW, IEX, APO, APH, AP25, APW, AUD2, AUDE, LRE2, LRE1, SSC, COBC, COMC, FC, CON, " +
+                "CER, HST, CLT, UNO, TRNE, D214, RESP, ASG, TREL, AOS, ESSY, AP, BRAC, ARTP, " +
+                "COMT, MAD, IEP, ECE1, MDHR, REF3, ISA, IELT, SUPP, GCEA, GCEO, CLEP, PASS, COPS, " +
+                "GRR, GRRP, ETR, ESL, DEPA, DEPD, DACA, EAC, IEG, GED, BS, CPE, F1, I797, NEDP, PAC, " +
+                "MIDY, MO, COOR, RESU, RSV, WES1, TOEFL, TAXP, TSE, SS, TAXP, PRC, OFEX\n";
+        
+        String[] tags = {"TSTS", "S05", "SAT", "S01", "S02", "IE11", "IE37", "IE75", "IEW", "IEX", "APO", "APH", "AP25", "APW", "AUD2", "AUDE", "LRE2", "LRE1", "SSC", "COBC", "COMC", "FC", "CON", "CER", "HST", "CLT", "UNO", "TRNE", "D214", "RESP", "ASG", "TREL", "AOS", "ESSY", "AP", "BRAC", "ARTP", "COMT", "MAD", "IEP", "ECE1", "MDHR", "REF3", "ISA", "IELT", "SUPP", "GCEA", "GCEO", "CLEP", "PASS", "COPS", "GRR", "GRRP", "ETR", "ESL", "DEPA", "DEPD", "DACA", "EAC", "IEG", "GED", "BS", "CPE", "F1", "I797", "NEDP", "PAC", "MIDY", "MO", "COOR", "RESU", "RSV", "WES1", "TOEFL", "TAXP", "TSE", "SS", "TAXP", "PRC", "OFEX"};
+        
+        for(PrettyStudentPrint psp: pspArray){
+            content += psp.getStudentInfo();
+            for(String tag : tags){
+                if(psp.getChecklist().containsKey(tag))
+                    content += ", " + psp.getChecklist().get(tag);
+                else
+                    content += ",";
+            }
+            content += "\n";
+        }
+        
+        /*
         for(PrettyStudentPrint psp: pspArray)
             content += psp.getStudentInfo() + ", " + psp.getFoundChecklist() + "\n";
-        
+        */
         File file = new File(CSVFILE);
         FileOutputStream fop = new FileOutputStream(file);
 

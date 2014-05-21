@@ -30,8 +30,8 @@ public class IncompleteStudents {
     private String jsonObj = "";
     private ArrayList<IncompleteStudent> students = new ArrayList<>();
     //private final String JSONPATH = "/Users/user/Desktop/TheFiles/json/incomplete1.json";
-    private final String JSONPATH = "/Users/pablohpsilva/Downloads/incomplete1.json";
-    private final String JSONEXIT = "/Users/pablohpsilva/Desktop/target/1";
+    private final String JSONPATH = "/Users/pablohpsilva/Downloads/incomplete8.8.json";
+    private final String JSONEXIT = "/Users/pablohpsilva/Desktop/target/8.8";
 
     public ArrayList<IncompleteStudent> getStudents() {
         return students;
